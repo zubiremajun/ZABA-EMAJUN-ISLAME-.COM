@@ -137,6 +137,9 @@
     let resetMethod = 'sms';
     let targetUserEmail = '';
 
+    // এক্সক্লুসিভ মাস্টার এডমিন জিমেইল ডিটেকশন ভেরিয়েবল 
+    const EXCLUSIVE_ADMIN_EMAIL = "zubirosmani0@gmail.com";
+
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
         'size': 'invisible',
         'callback': (response) => {}
@@ -156,8 +159,17 @@
         btn.innerText = "Checking Credentials...";
 
         try {
+            // ফায়ারবেস দিয়ে ইমেল এবং পাসওয়ার্ড ভেরিফাই করা হচ্ছে
             await signInWithEmailAndPassword(auth, email, password);
-            window.location.href = "dashboard.html";
+            
+            // 🎯 স্পেশাল এডমিন গেটওয়ে চেক কন্ডিশন
+            if (email === EXCLUSIVE_ADMIN_EMAIL) {
+                alert("Welcome back, Master Developer Manager! Routing to Secure Admin Terminal...");
+                window.location.href = "admin-dashboard.html"; // এডমিন ড্যাশবোর্ডে নিয়ে যাবে
+            } else {
+                window.location.href = "dashboard.html"; // সাধারণ মেম্বার ড্যাশবোর্ডে নিয়ে যাবে
+            }
+            
         } catch (error) {
             btn.disabled = false;
             btn.innerText = "Login to System";
@@ -348,5 +360,4 @@
 </script>
 
 </body>
-              </html>
-  
+</html>
