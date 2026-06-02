@@ -25,9 +25,11 @@
         .btn-submit { width: 100%; padding: 14px; background-color: #7e22ce; color: #ffffff; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 10px; transition: background-color 0.2s; }
         .btn-submit:hover { background-color: #6b21a8; }
         
-        .forgot-link { text-align: center; margin-top: 20px; font-size: 14px; }
-        .forgot-link a { color: #7e22ce; text-decoration: none; font-weight: 500; cursor: pointer; }
-        .forgot-link a:hover { text-decoration: underline; }
+        /* Navigation Link Utilities */
+        .navigation-links { text-align: center; margin-top: 20px; font-size: 14px; }
+        .navigation-links a { color: #7e22ce; text-decoration: none; font-weight: 500; cursor: pointer; }
+        .navigation-links a:hover { text-decoration: underline; }
+        .divider { border: 0; border-top: 1px solid #e5e7eb; margin: 15px 0; }
 
         /* Modal Structure for Password Reset Flow */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000; }
@@ -41,7 +43,7 @@
 </head>
 <body>
 
-<!-- Main Login Terminal -->
+<!-- Main Login Terminal Gateway -->
 <div class="form-container" id="loginTerminal">
     <div class="logo-section">
         <img class="company-logo" src="https://lh3.googleusercontent.com/d/16JqDei6AtMnzPDgZenhBUxrbevlj18fN" alt="Company Logo">
@@ -63,8 +65,13 @@
         <button type="submit" class="btn-submit" id="loginBtn">Login to System</button>
     </form>
     
-    <div class="forgot-link">
+    <!-- Central Navigation Gateway (Integrated Registration Link) -->
+    <div class="navigation-links">
         <a id="openForgotModal">Forgot Password?</a>
+        <hr class="divider">
+        <p style="color: #4b5563; margin: 0;">Don't have an account? 
+            <a href="register.html" style="color: #7e22ce; font-weight: 700; margin-left: 3px;">Register New Account</a>
+        </p>
     </div>
 </div>
 
@@ -126,9 +133,25 @@
 </div>
 
 <script type="module">
-    import { auth, db } from "./firebase-config.js";
-    import { signInWithEmailAndPassword, updatePassword, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    // Core Firebase App Initialization inside Module
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, updatePassword, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Your Explicit App Web Firebase Configuration Architecture
+    const firebaseConfig = {
+        apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
+        authDomain: "zaba-emajun-islam.firebaseapp.com",
+        projectId: "zaba-emajun-islam",
+        storageBucket: "zaba-emajun-islam.firebasestorage.app",
+        messagingSenderId: "593592059226",
+        appId: "1:593592059226:web:bfd81719f87e065dc19f63"
+    };
+
+    // Instantiate Services
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
     let countdown;
     let timeLeft = 60;
@@ -137,7 +160,7 @@
     let resetMethod = 'sms';
     let targetUserEmail = '';
 
-    // এক্সক্লুসিভ মাস্টার এডমিন জিমেইল ডিটেকশন ভেরিয়েবল 
+    // Exclusive Master Administrator Gateway Configuration 
     const EXCLUSIVE_ADMIN_EMAIL = "zubirosmani0@gmail.com";
 
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -159,15 +182,14 @@
         btn.innerText = "Checking Credentials...";
 
         try {
-            // ফায়ারবেস দিয়ে ইমেল এবং পাসওয়ার্ড ভেরিফাই করা হচ্ছে
             await signInWithEmailAndPassword(auth, email, password);
             
-            // 🎯 স্পেশাল এডমিন গেটওয়ে চেক কন্ডিশন
+            // Administrative Routing Gatekeeper Logic
             if (email === EXCLUSIVE_ADMIN_EMAIL) {
                 alert("Welcome back, Master Developer Manager! Routing to Secure Admin Terminal...");
-                window.location.href = "admin-dashboard.html"; // এডমিন ড্যাশবোর্ডে নিয়ে যাবে
+                window.location.href = "admin-dashboard.html"; 
             } else {
-                window.location.href = "dashboard.html"; // সাধারণ মেম্বার ড্যাশবোর্ডে নিয়ে যাবে
+                window.location.href = "dashboard.html"; 
             }
             
         } catch (error) {
@@ -196,7 +218,7 @@
         }
     }
 
-    // Forgot Password Flow - Step 1: Validate User via Cross-checking database
+    // Forgot Password Flow - Step 1: Validate User Identity
     document.getElementById('sendResetOtpBtn').addEventListener('click', async () => {
         document.getElementById('resetEmailError').style.display = 'none';
         document.getElementById('resetMobileError').style.display = 'none';
@@ -237,7 +259,7 @@
         }
     });
 
-    // Dispatch Engine for Recovery OTP
+    // Dispatch Engine for Recovery OTP Tokens
     function dispatchResetOtp(phone, email) {
         document.getElementById('forgotStep1').style.display = 'none';
         document.getElementById('forgotStep2').style.display = 'block';
@@ -292,7 +314,7 @@
         document.getElementById('forgotStep3').style.display = 'block';
     }
 
-    // Step 3: Override Account Password In Database Authentication Structure
+    // Step 3: Override Account Password In Authentication Structure
     document.getElementById('saveNewPassBtn').addEventListener('click', async () => {
         document.getElementById('newPassError').style.display = 'none';
         const newPass = document.getElementById('newPassword').value;
@@ -360,4 +382,5 @@
 </script>
 
 </body>
-</html>
+    </html>
+    
