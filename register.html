@@ -1,275 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration - Zaba Emajun Islam</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px 0; }
-        .form-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); width: 100%; max-width: 400px; box-sizing: border-box; }
-        
-        .logo-section { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 25px; width: 100%; }
-        .company-logo { width: 120px; height: 120px; display: block; margin: 0 auto; object-fit: contain; border-radius: 50%; border: 2px solid #e5e7eb; background-color: #ffffff; }
-        .company-name { font-size: 22px; font-weight: 800; color: #111827; margin: 15px 0 0 0; text-align: center; letter-spacing: 1px; width: 100%; }
-        
-        h2 { text-align: center; color: #1f2937; margin-bottom: 24px; font-size: 20px; font-weight: 600; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; }
-        .input-group { margin-bottom: 18px; }
-        .input-group label { display: block; margin-bottom: 6px; color: #4b5563; font-size: 14px; font-weight: 500; }
-        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 15px; background-color: #f9fafb; transition: border 0.2s; }
-        .input-group input:focus, .input-group select:focus { border-color: #2563eb; outline: none; background-color: #fff; }
-        
-        /* OTP Choice Group */
-        .otp-choice-group { background: #f3f4f6; padding: 12px; border-radius: 6px; margin-bottom: 18px; border: 1px dashed #2563eb; }
-        
-        .btn-submit { width: 100%; padding: 14px; background-color: #2563eb; color: #ffffff; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 10px; transition: background-color 0.2s; }
-        .btn-submit:hover { background-color: #1d4ed8; }
-        .login-link { text-align: center; margin-top: 20px; font-size: 14px; color: #6b7280; }
-        .login-link a { color: #2563eb; text-decoration: none; font-weight: 500; }
-        
-        /* OTP Popup Modal (The Box with Timer) */
-        .otp-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000; }
-        .otp-box { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 90%; max-width: 360px; text-align: center; box-sizing: border-box; }
-        .otp-box h3 { margin-top: 0; color: #1f2937; margin-bottom: 10px; }
-        .otp-box p { color: #4b5563; font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
-        .otp-input { width: 100%; padding: 12px; font-size: 20px; text-align: center; letter-spacing: 6px; border: 2px solid #2563eb; border-radius: 6px; margin-bottom: 15px; box-sizing: border-box; font-weight: bold; color: #1f2937; }
-        .timer-text { font-size: 16px; font-weight: bold; margin-bottom: 15px; color: #dc2626; background: #fee2e2; padding: 6px; border-radius: 4px; display: inline-block; }
-        .warning-text { color: #dc2626; display: none; font-size: 14px; margin-bottom: 15px; font-weight: 500; }
-        .btn-verify { width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
-        .btn-verify:hover { background-color: #059669; }
-        .btn-resend { width: 100%; padding: 12px; background-color: #ef4444; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; display: none; }
-    </style>
-</head>
-<body>
+<!-- 1. EmailJS & Firebase Official Libraries Connection -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-<div class="form-container">
-    <div class="logo-section">
-        <img class="company-logo" src="https://lh3.googleusercontent.com/d/16JqDei6AtMnzPDgZenhBUxrbevlj18fN" alt="Company Logo">
-        <h1 class="company-name">ZABÀ EMAJUN ISLAM</h1>
-    </div>
-
-    <h2>Member Registration</h2>
-    <form id="registrationForm">
-        <div class="input-group">
-            <label>Full Name</label>
-            <input type="text" id="fullName" placeholder="Enter full name" required>
-        </div>
-        <div class="input-group">
-            <label>Mobile Number</label>
-            <input type="tel" id="mobileNumber" placeholder="+8801XXXXXXXXX" required>
-        </div>
-        <div class="input-group">
-            <label>Email Address</label>
-            <input type="email" id="email" placeholder="example@mail.com" required>
-        </div>
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="password" placeholder="Minimum 6 characters" required>
-        </div>
-        
-        <!-- OTP Delivery Method Choice -->
-        <div class="otp-choice-group">
-            <label style="font-weight: 600; color: #2563eb; display: block; margin-bottom: 5px; font-size: 14px;">Receive OTP via:</label>
-            <select id="otpMethod">
-                <option value="sms">Mobile SMS (+8801...)</option>
-                <option value="email">Email Address</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn-submit" id="submitBtn">Register & Send OTP</button>
-    </form>
-    <div class="login-link">
-        Already have an account? <a href="login.html">Login</a>
-    </div>
-</div>
-
-<div id="recaptcha-container"></div>
-
-<!-- OTP Verification Modal (The Popup Box with 1 Minute Timer) -->
-<div class="otp-modal" id="otpModal">
-    <div class="otp-box">
-        <h3>OTP Verification</h3>
-        <p id="otpMessage">An OTP code has been sent. Please enter it below.</p>
-        <input type="text" class="otp-input" id="otpCode" placeholder="XXXXXX" maxlength="6">
-        <div><div class="timer-text" id="timerDisplay">Time Left: 01:00</div></div>
-        <div class="warning-text" id="warningMessage">Timeout! The OTP has expired. Please try again.</div>
-        <button type="button" class="btn-verify" id="verifyBtn">Verify & Complete Registration</button>
-        <button type="button" class="btn-resend" id="resendBtn">Resend OTP</button>
-    </div>
-</div>
-
-<!-- Firebase Modular SDK -->
 <script type="module">
-    import { auth, db } from "./firebase-config.js";
-    import { RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { collection, query, where, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  // Import Firebase Functions
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    let countdown;
-    let timeLeft = 60;
-    let confirmationResult = null;
-    let currentOtpMethod = 'sms';
-    let generatedEmailOtp = null; 
+  // 🔥 Firebase Database Configuration (Your verified bridge)
+  const firebaseConfig = {
+    apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
+    authDomain: "zaba-emajun-islam.firebaseapp.com",
+    projectId: "zaba-emajun-islam",
+    storageBucket: "zaba-emajun-islam.firebasestorage.app",
+    messagingSenderId: "593592059226",
+    appId: "1:593592059226:web:bfd81719f87e065dc19f63"
+  };
 
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': (response) => {}
-    });
+  // Initialize Firebase Services
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // Main Submit Handler with Duplicate Data Validation
-    document.getElementById('registrationForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Checking Details...";
+  // ✉️ Initialize EmailJS (Your Verified Public Key Connected Here)
+  emailjs.init("3Hbg-0gXLuoRnX2pC"); 
 
-        const mobileNumber = document.getElementById('mobileNumber').value.trim();
-        const email = document.getElementById('email').value.trim().toLowerCase();
-        currentOtpMethod = document.getElementById('otpMethod').value;
+  let generatedOTP = null;
+  let tempUserData = {};
 
-        try {
-            // 1. Security Check: Validate Duplicate Email
-            const emailQuery = query(collection(db, "members"), where("email", "==", email));
-            const emailSnapshot = await getDocs(emailQuery);
-            if (!emailSnapshot.empty) {
-                alert("This Email Address is already registered! Please use another email.");
-                resetSubmitButton();
-                return;
-            }
+  // STEP 1: Registration Form Submission Handler
+  document.getElementById("registrationForm").addEventListener("submit", function(e) {
+    e.preventDefault();
 
-            // 2. Security Check: Validate Duplicate Mobile Number
-            const phoneQuery = query(collection(db, "members"), where("mobileNumber", "==", mobileNumber));
-            const phoneSnapshot = await getDocs(phoneQuery);
-            if (!phoneSnapshot.empty) {
-                alert("This Mobile Number is already registered! Please use another number.");
-                resetSubmitButton();
-                return;
-            }
+    // Collect data from HTML Input fields
+    tempUserData = {
+      name: document.getElementById("fullName").value,
+      phone: document.getElementById("phoneNumber").value,
+      email: document.getElementById("emailAddress").value,
+      password: document.getElementById("password").value
+    };
 
-            // 3. Trigger OTP Routing
-            sendOtpToUser(mobileNumber, email);
+    // Generate random 6-digit OTP code (Changes automatically every time)
+    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-        } catch (error) {
-            alert("Security check error: " + error.message);
-            resetSubmitButton();
-        }
-    });
+    // Prepare parameters matching your EmailJS Template
+    const emailParams = {
+      to_email: tempUserData.email,
+      to_name: tempUserData.name,
+      otp_code: generatedOTP
+    };
 
-    // Core Function to Send OTP based on selection
-    function sendOtpToUser(phone, email) {
-        if (currentOtpMethod === 'sms') {
-            document.getElementById('otpMessage').innerHTML = `A 6-digit OTP code has been sent to your mobile: <br><strong>${phone}</strong>`;
-            signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-                .then((result) => {
-                    confirmationResult = result;
-                    openModal();
-                }).catch((error) => {
-                    alert("SMS OTP Send Failed: " + error.message);
-                    resetSubmitButton();
-                });
-        } else {
-            // Generating standard 6 Digit Token for Email Authentication UI Box
-            generatedEmailOtp = Math.floor(100000 + Math.random() * 900000).toString();
-            document.getElementById('otpMessage').innerHTML = `An OTP code has been sent to your email: <br><strong>${email}</strong>.<br><span style='color: #2563eb;'>[Test Mode Token: ${generatedEmailOtp}]</span>`;
-            openModal();
-        }
-    }
+    // Send OTP email via your verified Service ID and Template ID
+    emailjs.send("service_pf74nir", "template_843o01l", emailParams)
+      .then(function() {
+        alert("An OTP code has been successfully sent to your Gmail!");
+        document.getElementById("otpSection").style.display = "block"; // Show OTP verification box
+      }, function(error) {
+        alert("EmailJS Error: Failed to send OTP. Please check your connection IDs.");
+        console.log("Error details:", error);
+      });
+  });
 
-    function openModal() {
-        document.getElementById('otpModal').style.display = 'flex';
-        restartTimer();
-    }
+  // STEP 2: Verify OTP Button Click Handler
+  document.getElementById("verifyOTPButton").addEventListener("click", function() {
+    const userEnteredOTP = document.getElementById("otpInput").value;
 
-    function resetSubmitButton() {
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Register & Send OTP";
-    }
+    if (userEnteredOTP === generatedOTP) {
+      alert("OTP Verification Successful!");
 
-    // OTP Code Verification and Late Firestore Commit Security
-    document.getElementById('verifyBtn').addEventListener('click', function() {
-        const inputCode = document.getElementById('otpCode').value.trim();
-        
-        if (inputCode.length === 6) {
-            if (currentOtpMethod === 'sms' && confirmationResult) {
-                // Verify Mobile SMS Firebase Engine Token
-                confirmationResult.confirm(inputCode).then((result) => {
-                    saveFinalDataToDatabase(result.user.uid);
-                }).catch(() => {
-                    alert("Invalid SMS OTP code. Try again.");
-                });
-            } else if (currentOtpMethod === 'email') {
-                // Verify Email code validation Match
-                if (inputCode === generatedEmailOtp) {
-                    const tempUid = "mail-user-" + Math.random().toString(36).substr(2, 9);
-                    saveFinalDataToDatabase(tempUid);
-                } else {
-                    alert("Invalid Email OTP code. Try again.");
-                }
-            }
-        } else {
-            alert('Please enter a valid 6-digit OTP code.');
-        }
-    });
+      // STEP 3: Save Verified Member Data to Firebase Auth & Firestore Database
+      createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
 
-    // Secure Data Commit Function (Triggers strictly after verification)
-    function saveFinalDataToDatabase(uid) {
-        const fullName = document.getElementById('fullName').value;
-        const mobileNumber = document.getElementById('mobileNumber').value;
-        const email = document.getElementById('email').value.toLowerCase();
+          // Storing user's Name, Phone, and Email inside Firestore "members" collection
+          setDoc(doc(db, "members", user.uid), {
+            name: tempUserData.name,
+            phone: tempUserData.phone,
+            email: tempUserData.email,
+            createdAt: new Date()
+          })
+          .then(() => {
+            alert("Success! Member data securely saved to Firebase Database.");
+            window.location.href = "dashboard.html"; // Redirect to dashboard page
+          })
+          .catch((error) => {
+            alert("Database Error: Failed to save member info: " + error.message);
+          });
 
-        setDoc(doc(db, "members", uid), {
-            uid: uid,
-            fullName: fullName,
-            mobileNumber: mobileNumber,
-            email: email,
-            createdAt: new Date().toISOString()
-        }).then(() => {
-            clearInterval(countdown);
-            alert('Registration Successful! Your account has been securely created in the Database.');
-            window.location.href = "login.html"; // Redirects on success
-        }).catch((dbError) => {
-            alert("Database write restriction error: " + dbError.message);
+        })
+        .catch((error) => {
+          alert("Firebase Authentication Error: " + error.message);
         });
+
+    } else {
+      alert("Invalid OTP! Please enter the correct code from your email.");
     }
-
-    // 1 Minute Timer Engine
-    function startTimer() {
-        countdown = setInterval(function() {
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                document.getElementById('timerDisplay').style.display = 'none';
-                document.getElementById('otpCode').disabled = true;
-                document.getElementById('verifyBtn').style.display = 'none';
-                document.getElementById('warningMessage').style.display = 'block';
-                document.getElementById('resendBtn').style.display = 'block';
-            } else {
-                let minutes = Math.floor(timeLeft / 60);
-                let seconds = timeLeft % 60;
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-                document.getElementById('timerDisplay').textContent = `Time Left: ${minutes < 10 ? '0' + minutes : minutes}:${seconds}`;
-                timeLeft--;
-            }
-        }, 1000);
-    }
-
-    function restartTimer() {
-        clearInterval(countdown);
-        timeLeft = 60;
-        document.getElementById('otpCode').disabled = false;
-        document.getElementById('otpCode').value = '';
-        document.getElementById('timerDisplay').style.display = 'block';
-        document.getElementById('verifyBtn').style.display = 'block';
-        document.getElementById('warningMessage').style.display = 'none';
-        document.getElementById('resendBtn').style.display = 'none';
-        startTimer();
-    }
-
-    document.getElementById('resendBtn').addEventListener('click', function() {
-        const mobileNumber = document.getElementById('mobileNumber').value;
-        const email = document.getElementById('email').value;
-        sendOtpToUser(mobileNumber, email);
-    });
-</script>
-
-</body>
-  </html>
-  
+  });
+        </script>
+        
