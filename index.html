@@ -182,14 +182,27 @@
         btn.innerText = "Checking Credentials...";
 
         try {
+            // ১. প্রথমে ফায়ারস্টোর ডাটাবেজ থেকে লাইভ মেম্বার ডেটা চেক করা হচ্ছে
+            const memberQuery = query(collection(db, "members"), where("email", "==", email));
+            const querySnapshot = await getDocs(memberQuery);
+
+            // এক্সক্লুসিভ এডমিন ছাড়া সাধারণ মেম্বারদের জন্য ডাটাবেজ ভেরিফিকেশন চেক
+            if (querySnapshot.empty && email !== EXCLUSIVE_ADMIN_EMAIL) {
+                btn.disabled = false;
+                btn.innerText = "Login to System";
+                document.getElementById('loginEmailError').style.display = 'block';
+                return;
+            }
+
+            // ২. ফায়ারবেস অথেনটিকেশন দিয়ে লাইভ লগইন সম্পন্ন করা হচ্ছে
             await signInWithEmailAndPassword(auth, email, password);
             
-            // Administrative Routing Gatekeeper Logic
+            // ৩. ডিরেক্ট রিডাইরেক্ট গেটওয়ে লজিক ফিক্স
             if (email === EXCLUSIVE_ADMIN_EMAIL) {
                 alert("Welcome back, Master Developer Manager! Routing to Secure Admin Terminal...");
-                window.location.href = "admin-dashboard.html"; 
+                window.location.replace("admin-dashboard.html"); 
             } else {
-                window.location.href = "dashboard.html"; 
+                window.location.replace("dashboard.html"); 
             }
             
         } catch (error) {
@@ -244,10 +257,10 @@
 
             let databaseMobile = "";
             querySnapshot.forEach((doc) => {
-                databaseMobile = doc.data().mobileNumber;
+                databaseMobile = doc.data().mobileNumber || doc.data().phone || "";
             });
 
-            if(databaseMobile !== mobile) {
+            if(databaseMobile.trim() !== mobile) {
                 document.getElementById('resetMobileError').style.display = 'block';
                 return;
             }
