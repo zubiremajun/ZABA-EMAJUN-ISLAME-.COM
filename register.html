@@ -1,101 +1,149 @@
-<!-- 1. EmailJS & Firebase Official Libraries Connection -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zaba Emajun Islame - Registration</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .form-container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; box-sizing: border-box; }
+    .form-container h2 { text-align: center; color: #333; margin-bottom: 20px; }
+    .input-group { margin-bottom: 15px; }
+    .input-group label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
+    .input-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+    .btn { width: 100%; padding: 12px; background: #007bff; border: none; color: white; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    .btn:hover { background: #0056b3; }
+    #otpSection { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ddd; }
+  </style>
+</head>
+<body>
 
-<script type="module">
-  // Import Firebase Functions
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  <div class="form-container">
+    <h2>Member Registration</h2>
+    
+    <!-- STEP 1 FORM: Registration Input Fields -->
+    <form id="registrationForm">
+      <div class="input-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="Enter full name" required>
+      </div>
+      <div class="input-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" id="phoneNumber" placeholder="Enter phone number" required>
+      </div>
+      <div class="input-group">
+        <label for="emailAddress">Email Address</label>
+        <input type="email" id="emailAddress" placeholder="Enter email" required>
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create password" required>
+      </div>
+      <button type="submit" class="btn">Send OTP Code</button>
+    </form>
 
-  // 🔥 Firebase Database Configuration (Your verified bridge)
-  const firebaseConfig = {
-    apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
-    authDomain: "zaba-emajun-islam.firebaseapp.com",
-    projectId: "zaba-emajun-islam",
-    storageBucket: "zaba-emajun-islam.firebasestorage.app",
-    messagingSenderId: "593592059226",
-    appId: "1:593592059226:web:bfd81719f87e065dc19f63"
-  };
+    <!-- STEP 2 FORM: OTP Verification Box (Hidden by default) -->
+    <div id="otpSection">
+      <div class="input-group">
+        <label for="otpInput">Enter 6-Digit OTP</label>
+        <input type="text" id="otpInput" placeholder="Enter OTP code" maxlength="6">
+      </div>
+      <button id="verifyOTPButton" class="btn" style="background: #28a745;">Verify & Register</button>
+    </div>
+  </div>
 
-  // Initialize Firebase Services
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+  <!-- ========================================================================= -->
+  <!-- ✉️ & 🔥 Integration Bridge Section (Your JavaScript Starts Here) -->
+  <!-- ========================================================================= -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-  // ✉️ Initialize EmailJS (Your Verified Public Key Connected Here)
-  emailjs.init("3Hbg-0gXLuoRnX2pC"); 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  let generatedOTP = null;
-  let tempUserData = {};
-
-  // STEP 1: Registration Form Submission Handler
-  document.getElementById("registrationForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    // Collect data from HTML Input fields
-    tempUserData = {
-      name: document.getElementById("fullName").value,
-      phone: document.getElementById("phoneNumber").value,
-      email: document.getElementById("emailAddress").value,
-      password: document.getElementById("password").value
+    // Firebase Verified Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
+      authDomain: "zaba-emajun-islam.firebaseapp.com",
+      projectId: "zaba-emajun-islam",
+      storageBucket: "zaba-emajun-islam.firebasestorage.app",
+      messagingSenderId: "593592059226",
+      appId: "1:593592059226:web:bfd81719f87e065dc19f63"
     };
 
-    // Generate random 6-digit OTP code (Changes automatically every time)
-    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // Prepare parameters matching your EmailJS Template
-    const emailParams = {
-      to_email: tempUserData.email,
-      to_name: tempUserData.name,
-      otp_code: generatedOTP
-    };
+    // EmailJS Public Key
+    emailjs.init("3Hbg-0gXLuoRnX2pC"); 
 
-    // Send OTP email via your verified Service ID and Template ID
-    emailjs.send("service_pf74nir", "template_843o01l", emailParams)
-      .then(function() {
-        alert("An OTP code has been successfully sent to your Gmail!");
-        document.getElementById("otpSection").style.display = "block"; // Show OTP verification box
-      }, function(error) {
-        alert("EmailJS Error: Failed to send OTP. Please check your connection IDs.");
-        console.log("Error details:", error);
-      });
-  });
+    let generatedOTP = null;
+    let tempUserData = {};
 
-  // STEP 2: Verify OTP Button Click Handler
-  document.getElementById("verifyOTPButton").addEventListener("click", function() {
-    const userEnteredOTP = document.getElementById("otpInput").value;
+    // Submit Registration
+    document.getElementById("registrationForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-    if (userEnteredOTP === generatedOTP) {
-      alert("OTP Verification Successful!");
+      tempUserData = {
+        name: document.getElementById("fullName").value,
+        phone: document.getElementById("phoneNumber").value,
+        email: document.getElementById("emailAddress").value,
+        password: document.getElementById("password").value
+      };
 
-      // STEP 3: Save Verified Member Data to Firebase Auth & Firestore Database
-      createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password)
-        .then((userCredential) => {
-          const user = userCredential.user;
+      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-          // Storing user's Name, Phone, and Email inside Firestore "members" collection
-          setDoc(doc(db, "members", user.uid), {
-            name: tempUserData.name,
-            phone: tempUserData.phone,
-            email: tempUserData.email,
-            createdAt: new Date()
-          })
-          .then(() => {
-            alert("Success! Member data securely saved to Firebase Database.");
-            window.location.href = "dashboard.html"; // Redirect to dashboard page
+      const emailParams = {
+        to_email: tempUserData.email,
+        to_name: tempUserData.name,
+        otp_code: generatedOTP
+      };
+
+      // EmailJS Service ID & Template ID Connected
+      emailjs.send("service_pf74nir", "template_843o01l", emailParams)
+        .then(function() {
+          alert("An OTP code has been successfully sent to your Gmail!");
+          document.getElementById("otpSection").style.display = "block"; 
+        }, function(error) {
+          alert("EmailJS Error: Failed to send OTP. Please check your network.");
+          console.log("Error details:", error);
+        });
+    });
+
+    // Verify OTP
+    document.getElementById("verifyOTPButton").addEventListener("click", function() {
+      const userEnteredOTP = document.getElementById("otpInput").value;
+
+      if (userEnteredOTP === generatedOTP) {
+        alert("OTP Verification Successful!");
+
+        createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+
+            setDoc(doc(db, "members", user.uid), {
+              name: tempUserData.name,
+              phone: tempUserData.phone,
+              email: tempUserData.email,
+              createdAt: new Date()
+            })
+            .then(() => {
+              alert("Success! Member data securely saved to Firebase Database.");
+              window.location.href = "dashboard.html"; 
+            })
+            .catch((error) => {
+              alert("Database Error: " + error.message);
+            });
           })
           .catch((error) => {
-            alert("Database Error: Failed to save member info: " + error.message);
+            alert("Firebase Auth Error: " + error.message);
           });
-
-        })
-        .catch((error) => {
-          alert("Firebase Authentication Error: " + error.message);
-        });
-
-    } else {
-      alert("Invalid OTP! Please enter the correct code from your email.");
-    }
-  });
-        </script>
-        
+      } else {
+        alert("Invalid OTP! Please enter the correct code from your email.");
+      }
+    });
+  </script>
+</body>
+</html>
