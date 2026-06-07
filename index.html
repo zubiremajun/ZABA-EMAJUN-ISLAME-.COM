@@ -182,22 +182,25 @@
         btn.innerText = "Checking Credentials...";
 
         try {
-            // ১. প্রথমে ফায়ারস্টোর ডাটাবেজ থেকে লাইভ মেম্বার ডেটা চেক করা হচ্ছে
-            const memberQuery = query(collection(db, "members"), where("email", "==", email));
-            const querySnapshot = await getDocs(memberQuery);
+            // ১. প্রথমে ফায়ারবেস অথেনটিকেশন দিয়ে মেম্বারকে সিকিউর লগইন করানো হচ্ছে
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            
+            // ২. লগইন সফল হওয়ার পর, সিকিউরড মেম্বার হিসেবে ডাটাবেজ থেকে তার লাইভ প্রোফাইল ভেরিফাই করা হচ্ছে
+            if (email !== EXCLUSIVE_ADMIN_EMAIL) {
+                const memberQuery = query(collection(db, "members"), where("email", "==", email));
+                const querySnapshot = await getDocs(memberQuery);
 
-            // এক্সক্লুসিভ এডমিন ছাড়া সাধারণ মেম্বারদের জন্য ডাটাবেজ ভেরিফিকেশন চেক
-            if (querySnapshot.empty && email !== EXCLUSIVE_ADMIN_EMAIL) {
-                btn.disabled = false;
-                btn.innerText = "Login to System";
-                document.getElementById('loginEmailError').style.display = 'block';
-                return;
+                if (querySnapshot.empty) {
+                    // যদি অথেনটিকেশন সফল হয় কিন্তু ফায়ারস্টোর ডাটাবেজে মেম্বারের ডাটা না থাকে
+                    btn.disabled = false;
+                    btn.innerText = "Login to System";
+                    document.getElementById('loginEmailError').style.display = 'block';
+                    document.getElementById('loginEmailError').innerText = "Auth success, but profile data not found in database!";
+                    return;
+                }
             }
 
-            // ২. ফায়ারবেস অথেনটিকেশন দিয়ে লাইভ লগইন সম্পন্ন করা হচ্ছে
-            await signInWithEmailAndPassword(auth, email, password);
-            
-            // ৩. ডিরেক্ট রিডাইরেক্ট গেটওয়ে লজিক ফিক্স
+            // ৩. সফল ভেরিফিকেশন শেষে সরাসরি ডিরেক্ট রিডাইরেক্ট (কোনো হ্যাং বা সাদা স্ক্রিন হবে না)
             if (email === EXCLUSIVE_ADMIN_EMAIL) {
                 alert("Welcome back, Master Developer Manager! Routing to Secure Admin Terminal...");
                 window.location.replace("admin-dashboard.html"); 
@@ -390,10 +393,4 @@
     function resetToStep1() {
         document.getElementById('forgotStep1').style.display = 'block';
         document.getElementById('forgotStep2').style.display = 'none';
-        document.getElementById('forgotStep3').style.display = 'none';
-    }
-</script>
-
-</body>
-    </html>
     
