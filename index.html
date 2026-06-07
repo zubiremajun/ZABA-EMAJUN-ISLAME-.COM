@@ -3,130 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Password Recovery - ZABÀ EMAJUN ISLAME</title>
+    <title>Member Login - ZABÀ EMAJUN ISLAME</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px 0; }
-        .form-container { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); width: 100%; max-width: 400px; box-sizing: border-box; }
-        
-        .logo-section { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 25px; width: 100%; }
-        .company-logo { width: 120px; height: 120px; display: block; margin: 0 auto; object-fit: contain; border-radius: 50%; border: 4px solid #7e22ce; background-color: #ffffff; box-shadow: 0 0 15px rgba(126, 34, 206, 0.3); }
-        .company-name { font-size: 24px; font-weight: 800; color: #7e22ce; margin: 15px 0 0 0; text-align: center; letter-spacing: 1px; width: 100%; }
-        
-        h2 { text-align: center; color: #1f2937; margin-bottom: 24px; font-size: 20px; font-weight: 600; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; }
-        .input-group { margin-bottom: 18px; position: relative; }
-        .input-group label { display: block; margin-bottom: 6px; color: #4b5563; font-size: 14px; font-weight: 500; }
-        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 15px; background-color: #f9fafb; transition: all 0.2s; }
-        .input-group input:focus, .input-group select:focus { border-color: #7e22ce; outline: none; background-color: #fff; }
-        
-        .warning-text { color: #dc2626; font-size: 13px; margin-top: 5px; display: none; font-weight: 500; }
-        
-        .btn-submit { width: 100%; padding: 14px; background-color: #7e22ce; color: #ffffff; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-top: 10px; transition: background-color 0.2s; }
-        .btn-submit:hover { background-color: #6b21a8; }
-        
-        .navigation-links { text-align: center; margin-top: 20px; font-size: 14px; }
-        .navigation-links a { color: #7e22ce; text-decoration: none; font-weight: 500; cursor: pointer; }
-        .navigation-links a:hover { text-decoration: underline; }
-        .divider { border: 0; border-top: 1px solid #e5e7eb; margin: 15px 0; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-box { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 90%; max-width: 380px; box-sizing: border-box; }
-        .modal-box h3 { margin-top: 0; color: #1f2937; margin-bottom: 15px; text-align: center; }
-        .otp-choice-group { background: #f3f4f6; padding: 12px; border-radius: 6px; margin-bottom: 18px; border: 1px dashed #7e22ce; }
-        
-        .otp-input { width: 100%; padding: 12px; font-size: 20px; text-align: center; letter-spacing: 6px; border: 2px solid #7e22ce; border-radius: 6px; margin-bottom: 15px; box-sizing: border-box; font-weight: bold; color: #1f2937; }
-        .timer-text { font-size: 15px; font-weight: bold; margin-bottom: 15px; color: #dc2626; background: #fee2e2; padding: 6px; border-radius: 4px; display: inline-block; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-box { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 100%; max-width: 380px; box-sizing: border-box; text-align: center; }
+        .logo { width: 100px; height: 100px; margin-bottom: 10px; border-radius: 50%; border: 3px solid #7e22ce; }
+        h2 { color: #1f2937; margin-bottom: 20px; font-size: 22px; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; color: #4b5563; font-size: 14px; font-weight: 500; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        .input-group input:focus { border-color: #7e22ce; outline: none; }
+        .error-message { color: #dc2626; font-size: 14px; margin-top: 5px; display: none; font-weight: 500; text-align: left; }
+        .btn-login { width: 100%; padding: 12px; background-color: #7e22ce; color: white; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn-login:hover { background-color: #6b21a8; }
+        .btn-login:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        .reg-link { margin-top: 20px; font-size: 14px; color: #4b5563; }
+        .reg-link a { color: #7e22ce; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="form-container" id="loginTerminal">
-    <div class="logo-section">
-        <img class="company-logo" src="https://lh3.googleusercontent.com/d/16JqDei6AtMnzPDgZenhBUxrbevlj18fN" alt="Company Logo">
-        <h1 class="company-name">ZABÀ EMAJUN ISLAME</h1>
-    </div>
-
-    <h2>Member Login</h2>
-    <form id="loginForm">
+<div class="login-box">
+    <img class="logo" src="https://lh3.googleusercontent.com/d/16JqDei6AtMnzPDgZenhBUxrbevlj18fN" alt="Logo">
+    <h2>ZABÀ EMAJUN ISLAME</h2>
+    
+    <form id="mainLoginForm">
         <div class="input-group">
             <label>Email Address</label>
-            <input type="email" id="loginEmail" placeholder="example@mail.com" required>
-            <div class="warning-text" id="loginEmailError">User account or email not found!</div>
+            <input type="email" id="email" placeholder="Enter email" required>
+            <div class="error-message" id="emailError">Email is not registered!</div>
         </div>
+        
         <div class="input-group">
             <label>Password</label>
-            <input type="password" id="loginPassword" placeholder="Enter your password" required>
-            <div class="warning-text" id="loginPassError">Incorrect password! Please try again.</div>
+            <input type="password" id="password" placeholder="Enter password" required>
+            <div class="error-message" id="passwordError">Incorrect password!</div>
         </div>
-        <button type="submit" class="btn-submit" id="loginBtn">Login to System</button>
-    </form>
-    
-    <div class="navigation-links">
-        <a id="openForgotModal">Forgot Password?</a>
-        <hr class="divider">
-        <p style="color: #4b5563; margin: 0;">Don't have an account? 
-            <a href="register.html" style="color: #7e22ce; font-weight: 700; margin-left: 3px;">Register New Account</a>
-        </p>
-    </div>
-</div>
-
-<div id="recaptcha-container"></div>
-
-<div class="modal" id="forgotModal">
-    <div class="modal-box">
-        <h3>Reset Password</h3>
         
-        <div id="forgotStep1">
-            <div class="input-group">
-                <label>Registered Email</label>
-                <input type="email" id="resetEmail" placeholder="example@mail.com">
-                <div class="warning-text" id="resetEmailError">Email not found!</div>
-            </div>
-            <div class="input-group">
-                <label>Registered Mobile</label>
-                <input type="tel" id="resetMobile" placeholder="+8801XXXXXXXXX">
-                <div class="warning-text" id="resetMobileError">Mobile number does not match!</div>
-            </div>
-            <div class="otp-choice-group">
-                <label style="font-weight: 600; color: #7e22ce; display: block; margin-bottom: 5px; font-size: 14px;">Dispatch Token Via:</label>
-                <select id="resetOtpMethod">
-                    <option value="sms">Mobile SMS</option>
-                    <option value="email">Email Address</option>
-                </select>
-            </div>
-            <button type="button" class="btn-submit" id="sendResetOtpBtn">Send Verification OTP</button>
-        </div>
+        <button type="submit" class="btn-login" id="submitBtn">Sign In</button>
+    </form>
 
-        <div id="forgotStep2" style="display: none;">
-            <p style="font-size: 14px; color: #4b5563; text-align: center;" id="otpMessage">Verifying identity...</p>
-            <input type="text" class="otp-input" id="resetOtpCode" placeholder="XXXXXX" maxlength="6">
-            <div style="text-align: center;">
-                <div class="timer-text" id="resetTimerDisplay">Time Left: 60 seconds</div>
-            </div>
-            <div class="warning-text" id="resetOtpError" style="text-align: center; margin-bottom: 15px;">Invalid or Expired OTP token!</div>
-            <button type="button" class="btn-submit" style="background-color: #10b981;" id="verifyResetOtpBtn">Verify Token</button>
-            <button type="button" class="btn-submit" style="background-color: #ef4444; display: none;" id="resendResetOtpBtn">Resend OTP</button>
-        </div>
-
-        <div id="forgotStep3" style="display: none;">
-            <div class="input-group">
-                <label>New Password</label>
-                <input type="password" id="newPassword" placeholder="Minimum 6 characters">
-            </div>
-            <div class="input-group">
-                <label>Confirm New Password</label>
-                <input type="password" id="confirmNewPassword" placeholder="Repeat new password">
-                <div class="warning-text" id="newPassError">Passwords do not match!</div>
-            </div>
-            <button type="button" class="btn-submit" style="background-color: #10b981;" id="saveNewPassBtn">Update Password</button>
-        </div>
+    <div class="reg-link">
+        Don't have an account? <a href="register.html">Register Here</a>
     </div>
 </div>
 
 <script type="module">
+    // Using official Firebase CDN modules directly
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, updatePassword, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+    // Your real Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
         authDomain: "zaba-emajun-islam.firebaseapp.com",
@@ -136,237 +63,57 @@
         appId: "1:593592059226:web:bfd81719f87e065dc19f63"
     };
 
+    // Initialize Firebase Services
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
 
-    let countdown;
-    let timeLeft = 60;
-    let generatedEmailOtp = null;
-    let confirmationResult = null;
-    let resetMethod = 'sms';
-    let targetUserEmail = '';
+    const ADMIN_EMAIL = "zubirosmani0@gmail.com";
 
-    const EXCLUSIVE_ADMIN_EMAIL = "zubirosmani0@gmail.com";
+    // Login Submit Action Engine
+    document.getElementById('mainLoginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        'size': 'invisible',
-        'callback': (response) => {}
-    });
+        // Reset error messages visibility
+        document.getElementById('emailError').style.display = 'none';
+        document.getElementById('passwordError').style.display = 'none';
 
-    // Cleaned Login Flow Engine
-    document.getElementById('loginForm').addEventListener('submit', async function(event) {
-        event.preventDefault();
-        
-        // Hide errors initially
-        document.getElementById('loginEmailError').style.display = 'none';
-        document.getElementById('loginPassError').style.display = 'none';
+        const emailInput = document.getElementById('email').value.trim().toLowerCase();
+        const passwordInput = document.getElementById('password').value;
+        const submitBtn = document.getElementById('submitBtn');
 
-        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-        const password = document.getElementById('loginPassword').value;
-        const btn = document.getElementById('loginBtn');
-
-        btn.disabled = true;
-        btn.innerText = "Connecting to Core...";
+        // Lock button to prevent double submissions
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Verifying...";
 
         try {
-            // Step 1: Firebase Authentication Direct Check
-            await signInWithEmailAndPassword(auth, email, password);
+            // Direct secure authentication via Firebase Auth
+            await signInWithEmailAndPassword(auth, emailInput, passwordInput);
             
-            // Step 2: Firestore Database Sync for normal members
-            if (email !== EXCLUSIVE_ADMIN_EMAIL) {
-                const memberQuery = query(collection(db, "members"), where("email", "==", email));
-                const querySnapshot = await getDocs(memberQuery);
-
-                if (querySnapshot.empty) {
-                    btn.disabled = false;
-                    btn.innerText = "Login to System";
-                    document.getElementById('loginEmailError').innerText = "Account verified, but profile data missing in Database!";
-                    document.getElementById('loginEmailError').style.display = 'block';
-                    return;
-                }
-            }
-
-            // Step 3: Hard Redirect (No Hanging Screens)
-            if (email === EXCLUSIVE_ADMIN_EMAIL) {
+            // Redirect immediately based on user role upon successful login
+            if (emailInput === ADMIN_EMAIL) {
                 window.location.href = "admin-dashboard.html";
             } else {
                 window.location.href = "dashboard.html";
             }
-            
+
         } catch (error) {
-            btn.disabled = false;
-            btn.innerText = "Login to System";
-            console.error("Login Error: ", error.code);
+            // Unlock button for re-attempt
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Sign In";
             
-            // Match exactly with Firebase auth codes to trigger UI alerts
+            console.error("Firebase Auth Error Code:", error.code);
+
+            // Display precise error feedback based on Firebase error codes
             if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
-                document.getElementById('loginEmailError').style.display = 'block';
+                document.getElementById('emailError').style.display = 'block';
             } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                document.getElementById('loginPassError').style.display = 'block';
+                document.getElementById('passwordError').style.display = 'block';
             } else {
-                alert("Connection Interrupted: " + error.message);
+                alert("Login Failed: " + error.message);
             }
         }
     });
-
-    // Forgot Password Controls
-    document.getElementById('openForgotModal').addEventListener('click', () => {
-        document.getElementById('forgotModal').style.display = 'flex';
-    });
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('forgotModal');
-        if (event.target == modal) {
-            modal.style.display = "none";
-            clearInterval(countdown);
-        }
-    }
-
-    document.getElementById('sendResetOtpBtn').addEventListener('click', async () => {
-        document.getElementById('resetEmailError').style.display = 'none';
-        document.getElementById('resetMobileError').style.display = 'none';
-
-        const email = document.getElementById('resetEmail').value.trim().toLowerCase();
-        const mobile = document.getElementById('resetMobile').value.trim();
-        resetMethod = document.getElementById('resetOtpMethod').value;
-        targetUserEmail = email;
-
-        if(!email || !mobile) {
-            alert('Fields cannot be empty.');
-            return;
-        }
-
-        try {
-            const memberQuery = query(collection(db, "members"), where("email", "==", email));
-            const querySnapshot = await getDocs(memberQuery);
-
-            if(querySnapshot.empty) {
-                document.getElementById('resetEmailError').style.display = 'block';
-                return;
-            }
-
-            let databaseMobile = "";
-            querySnapshot.forEach((doc) => {
-                databaseMobile = doc.data().mobileNumber || doc.data().phone || "";
-            });
-
-            if(databaseMobile.trim() !== mobile) {
-                document.getElementById('resetMobileError').style.display = 'block';
-                return;
-            }
-
-            dispatchResetOtp(mobile, email);
-
-        } catch (err) {
-            alert("Error: " + err.message);
-        }
-    });
-
-    function dispatchResetOtp(phone, email) {
-        document.getElementById('forgotStep1').style.display = 'none';
-        document.getElementById('forgotStep2').style.display = 'block';
-        document.getElementById('resetOtpError').style.display = 'none';
-
-        if (resetMethod === 'sms') {
-            document.getElementById('otpMessage').innerHTML = `SMS code sent to: <br><strong>${phone}</strong>`;
-            signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-                .then((result) => {
-                    confirmationResult = result;
-                    startTimer();
-                }).catch((error) => {
-                    alert("SMS Error: " + error.message);
-                    resetToStep1();
-                });
-        } else {
-            generatedEmailOtp = Math.floor(100000 + Math.random() * 900000).toString();
-            document.getElementById('otpMessage').innerHTML = `Email token sent to: <br><strong>${email}</strong>.<br><span style='color: #7e22ce;'>[Token: ${generatedEmailOtp}]</span>`;
-            startTimer();
-        }
-    }
-
-    document.getElementById('verifyResetOtpBtn').addEventListener('click', () => {
-        const inputCode = document.getElementById('resetOtpCode').value.trim();
-        document.getElementById('resetOtpError').style.display = 'none';
-
-        if (resetMethod === 'sms' && confirmationResult) {
-            confirmationResult.confirm(inputCode).then(() => {
-                clearInterval(countdown);
-                proceedToPasswordOverride();
-            }).catch(() => {
-                document.getElementById('resetOtpError').style.display = 'block';
-            });
-        } else if (resetMethod === 'email') {
-            if (inputCode === generatedEmailOtp) {
-                clearInterval(countdown);
-                proceedToPasswordOverride();
-            } else {
-                document.getElementById('resetOtpError').style.display = 'block';
-            }
-        }
-    });
-
-    function proceedToPasswordOverride() {
-        document.getElementById('forgotStep2').style.display = 'none';
-        document.getElementById('forgotStep3').style.display = 'block';
-    }
-
-    document.getElementById('saveNewPassBtn').addEventListener('click', async () => {
-        document.getElementById('newPassError').style.display = 'none';
-        const newPass = document.getElementById('newPassword').value;
-        const confirmPass = document.getElementById('confirmNewPassword').value;
-
-        if(newPass.length < 6 || newPass !== confirmPass) {
-            document.getElementById('newPassError').style.display = 'block';
-            return;
-        }
-
-        const user = auth.currentUser;
-        if(user) {
-            updatePassword(user, newPass).then(() => {
-                alert('Password updated successfully!');
-                window.location.reload();
-            }).catch((err) => {
-                alert("Error: " + err.message);
-            });
-        }
-    });
-
-    function startTimer() {
-        timeLeft = 60;
-        document.getElementById('resetOtpCode').disabled = false;
-        document.getElementById('resetTimerDisplay').style.display = 'inline-block';
-        document.getElementById('verifyResetOtpBtn').style.display = 'block';
-        document.getElementById('resendResetOtpBtn').style.display = 'none';
-
-        countdown = setInterval(function() {
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                document.getElementById('resetTimerDisplay').style.display = 'none';
-                document.getElementById('resetOtpCode').disabled = true;
-                document.getElementById('verifyResetOtpBtn').style.display = 'none';
-                document.getElementById('resetOtpError').style.display = 'block';
-                document.getElementById('resendResetOtpBtn').style.display = 'block';
-            } else {
-                document.getElementById('resetTimerDisplay').textContent = `Time Left: ${timeLeft} seconds`;
-                timeLeft--;
-            }
-        }, 1000);
-    }
-
-    document.getElementById('resendResetOtpBtn').addEventListener('click', () => {
-        const email = document.getElementById('resetEmail').value.trim().toLowerCase();
-        const mobile = document.getElementById('resetMobile').value.trim();
-        dispatchResetOtp(mobile, email);
-    });
-
-    function resetToStep1() {
-        document.getElementById('forgotStep1').style.display = 'block';
-        document.getElementById('forgotStep2').style.display = 'none';
-        document.getElementById('forgotStep3').style.display = 'none';
-    }
 </script>
 
 </body>
-    </html>
-    
+</html>
