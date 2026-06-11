@@ -6,17 +6,16 @@
   <title>Zaba Emajun Islame - Registration</title>
   <style>
     body { font-family: Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-    .form-container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; box-sizing: border-box; }
+    .form-container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; box-sizing: border-box; text-align: center; }
     .logo-container { text-align: center; margin-bottom: 15px; }
-    .logo-container img { width: 100px; height: 100px; border-radius: 50%; border: 2px solid #007bff; object-fit: cover; }
+    .logo-container img { width: 100px; height: 100px; border-radius: 50%; border: 2px solid #007bff; object-fit: cover; display: inline-block; }
     .company-name { font-size: 18px; font-weight: bold; color: #007bff; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
     .form-container h2 { text-align: center; color: #333; margin-bottom: 20px; margin-top: 5px; }
-    .input-group { margin-bottom: 15px; }
+    .input-group { margin-bottom: 15px; text-align: left; }
     .input-group label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
     .input-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
     
-    /* Password Field Wrapper for Eye Icon */
-    .password-wrapper { position: relative; display: flex; align-items: center; }
+    .password-wrapper { position: relative; display: flex; align-items: center; width: 100%; }
     .password-wrapper input { padding-right: 40px; }
     .toggle-password { position: absolute; right: 10px; cursor: pointer; font-size: 18px; user-select: none; }
 
@@ -24,10 +23,9 @@
     .btn:hover { background: #0056b3; }
     .btn:disabled { background: #cccccc; cursor: not-allowed; }
     
-    /* OTP Section Styling */
     #otpSection { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ddd; }
-    .timer-style { font-size: 14px; color: #ff9800; font-weight: bold; margin-top: 5px; display: block; }
-    .warning-style { font-size: 14px; color: #dc3545; font-weight: bold; margin-top: 5px; display: none; }
+    .timer-style { font-size: 14px; color: #ff9800; font-weight: bold; margin-top: 5px; display: block; text-align: left; }
+    .warning-style { font-size: 14px; color: #dc3545; font-weight: bold; margin-top: 5px; display: none; text-align: left; }
   </style>
 </head>
 <body>
@@ -35,7 +33,6 @@
   <div class="form-container">
     <div class="logo-container">
       <img src="https://lh3.googleusercontent.com/d/16JqDei6AtMnzPDgZenhBUxrbevlj18fN" alt="Zaba Emajun Islame Logo">
-      <!-- কোম্পানির নাম এখানে লোগোর ঠিক নিচে যোগ করা হয়েছে -->
       <div class="company-name">ZABA EMAJUN ISLAME</div>
     </div>
     
@@ -56,7 +53,6 @@
       </div>
       <div class="input-group">
         <label for="password">Password</label>
-        <!-- Password Show/Hide Feature Added Here -->
         <div class="password-wrapper">
           <input type="password" id="password" placeholder="Create password" required>
           <span id="togglePasswordBtn" class="toggle-password">👁️</span>
@@ -84,7 +80,6 @@
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Firebase Verified Config
     const firebaseConfig = {
       apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
       authDomain: "zaba-emajun-islam.firebaseapp.com",
@@ -98,7 +93,8 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // EmailJS Public Key Connected
+    const ADMIN_EMAIL = "zubirosmani0@gmail.com";
+
     emailjs.init("3Hbg-0gXLuoRnX2pC"); 
 
     let generatedOTP = null;
@@ -106,7 +102,6 @@
     let countdownInterval = null;
     let isOtpExpired = false;
 
-    // Password Show/Hide JavaScript Logic
     document.getElementById("togglePasswordBtn").addEventListener("click", function() {
       const passwordInput = document.getElementById("password");
       if (passwordInput.type === "password") {
@@ -118,7 +113,6 @@
       }
     });
 
-    // Function to Send Email via EmailJS
     function sendOTP() {
       generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
       isOtpExpired = false;
@@ -133,14 +127,13 @@
         .then(function() {
           alert("An OTP code has been successfully sent to your Gmail!");
           document.getElementById("otpSection").style.display = "block";
-          startTimer(60); // Start 60 seconds countdown
+          startTimer(60);
         }, function(error) {
           alert("EmailJS Error: Failed to send OTP.");
           console.log("Error details:", error);
         });
     }
 
-    // Function to run the 60 Seconds Timer
     function startTimer(seconds) {
       clearInterval(countdownInterval);
       const timerText = document.getElementById("timerText");
@@ -149,7 +142,6 @@
       const resendBtn = document.getElementById("resendOTPButton");
       const otpInput = document.getElementById("otpInput");
 
-      // Reset styles
       timerText.style.display = "block";
       warningText.style.display = "none";
       verifyBtn.disabled = false;
@@ -167,34 +159,31 @@
           clearInterval(countdownInterval);
           isOtpExpired = true;
           timerText.style.display = "none";
-          warningText.style.display = "block"; // Show Red Warning
-          verifyBtn.disabled = true; // Block Verify Button
-          resendBtn.style.display = "block"; // Show Resend Button
-          otpInput.disabled = true; // Lock Input field
+          warningText.style.display = "block";
+          verifyBtn.disabled = true;
+          resendBtn.style.display = "block";
+          otpInput.disabled = true;
         }
       }, 1000);
     }
 
-    // Submit Registration Form (Step 1)
     document.getElementById("registrationForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
       tempUserData = {
         name: document.getElementById("fullName").value,
         phone: document.getElementById("phoneNumber").value,
-        email: document.getElementById("emailAddress").value,
+        email: document.getElementById("emailAddress").value.trim().toLowerCase(),
         password: document.getElementById("password").value
       };
 
       sendOTP();
     });
 
-    // Handle Resend OTP Button Click
     document.getElementById("resendOTPButton").addEventListener("click", function() {
       sendOTP();
     });
 
-    // Verify OTP Button Click (Step 2)
     document.getElementById("verifyOTPButton").addEventListener("click", function() {
       const userEnteredOTP = document.getElementById("otpInput").value;
 
@@ -207,7 +196,6 @@
         clearInterval(countdownInterval);
         alert("OTP Verification Successful!");
 
-        // Step 3: Firebase Operations
         createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password)
           .then((userCredential) => {
             const user = userCredential.user;
@@ -220,7 +208,13 @@
             })
             .then(() => {
               alert("Success! Member data securely saved to Firebase Database.");
-              window.location.href = "dashboard.html"; 
+              
+              // ফিক্সড লজিক: এডমিন ইমেইল হলে এডমিন ড্যাশবোর্ডে পাঠাবে, নাহলে নরমাল ড্যাশবোর্ডে
+              if (tempUserData.email === ADMIN_EMAIL) {
+                window.location.href = "admin-dashboard.html";
+              } else {
+                window.location.href = "dashboard.html";
+              }
             })
             .catch((error) => {
               alert("Database Error: " + error.message);
@@ -235,4 +229,5 @@
     });
   </script>
 </body>
-</html>
+  </html>
+  
