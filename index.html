@@ -49,11 +49,9 @@
 </div>
 
 <script type="module">
-    // Using official Firebase CDN modules directly
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // Your real Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
         authDomain: "zaba-emajun-islam.firebaseapp.com",
@@ -63,17 +61,14 @@
         appId: "1:593592059226:web:bfd81719f87e065dc19f63"
     };
 
-    // Initialize Firebase Services
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
     const ADMIN_EMAIL = "zubirosmani0@gmail.com";
 
-    // Login Submit Action Engine
     document.getElementById('mainLoginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // Reset error messages visibility
         document.getElementById('emailError').style.display = 'none';
         document.getElementById('passwordError').style.display = 'none';
 
@@ -81,15 +76,12 @@
         const passwordInput = document.getElementById('password').value;
         const submitBtn = document.getElementById('submitBtn');
 
-        // Lock button to prevent double submissions
         submitBtn.disabled = true;
         submitBtn.innerText = "Verifying...";
 
         try {
-            // Direct secure authentication via Firebase Auth
             await signInWithEmailAndPassword(auth, emailInput, passwordInput);
             
-            // Redirect immediately based on user role upon successful login
             if (emailInput === ADMIN_EMAIL) {
                 window.location.href = "admin-dashboard.html";
             } else {
@@ -97,13 +89,11 @@
             }
 
         } catch (error) {
-            // Unlock button for re-attempt
             submitBtn.disabled = false;
             submitBtn.innerText = "Sign In";
             
             console.error("Firebase Auth Error Code:", error.code);
 
-            // Display precise error feedback based on Firebase error codes
             if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
                 document.getElementById('emailError').style.display = 'block';
             } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
