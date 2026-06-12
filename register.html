@@ -209,10 +209,12 @@
             .then(() => {
               alert("Success! Member data securely saved to Firebase Database.");
               
-              // ফিক্সড লজিক: এডমিন ইমেইল হলে এডমিন ড্যাশবোর্ডে পাঠাবে, নাহলে নরমাল ড্যাশবোর্ডে
+              // এইখানে লজিক আপডেট করে দিয়েছি জুবায়ের ভাই:
               if (tempUserData.email === ADMIN_EMAIL) {
+                // আপনি রেজিস্ট্রেশন করলে সোজা এডমিন প্যানেলে যাবেন
                 window.location.href = "admin-dashboard.html";
               } else {
+                // অন্য সাধারণ মেম্বাররা রেজিস্ট্রেশন করলে সরাসরি ড্যাশবোর্ড পেজে চলে যাবে
                 window.location.href = "dashboard.html";
               }
             })
