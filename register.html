@@ -148,6 +148,8 @@
           alert("An OTP code has been successfully sent to your Gmail!");
           document.getElementById("otpSection").style.display = "block";
           startTimer(60);
+          document.getElementById("otpSection").scrollIntoView({ behavior: "smooth", block: "center" });
+          document.getElementById("otpInput").focus();
         }, function(error) {
           alert("EmailJS Error: Failed to send OTP.");
           console.log("Error details:", error);
