@@ -367,6 +367,34 @@ function openOther(uid){
 $("nav-home").onclick = () => show("home");
 $("nav-docs").onclick = () => openDocs(me.uid, "My Documents", "home");
 $("nav-members").onclick = openMembers;
+  /* ---------- Owners page ---------- */
+// >>> এখানে তিন মালিকের নাম, পদবি ও ছবির লিংক লিখুন <<<
+const OWNERS = [
+  { name: "Owner 1 Name", role: "Founder & Chairman", photo: "" },
+  { name: "Owner 2 Name", role: "Managing Director",  photo: "" },
+  { name: "Owner 3 Name", role: "Director",           photo: "" }
+];
+
+// >>> কোম্পানি, অর্ডার ইত্যাদি সম্পর্কে লেখা এখানে লিখুন <<<
+const OWNER_INFO = [
+  { title: "About Our Company", text: "Write about your company here." },
+  { title: "Orders",            text: "Write how members can place orders and how orders work." },
+  { title: "Contact",           text: "Write your office address and phone number here." }
+];
+
+function openOwners(){
+  $("v-owners").innerHTML =
+    OWNERS.map(o => `
+      <div class="o-card">
+        <div class="o-photo">${o.photo ? `<img src="${esc(o.photo)}" alt="">` : esc(o.name.charAt(0).toUpperCase())}</div>
+        <div class="o-name">${esc(o.name)}</div>
+        <div class="o-role">${esc(o.role)}</div>
+      </div>`).join("") +
+    OWNER_INFO.map(i => `
+      <div class="sec o-info"><h3>${esc(i.title)}</h3><p>${esc(i.text)}</p></div>`).join("");
+  show("owners");
+}
+$("nav-owners").onclick = openOwners;
 
 function doLogout(){ signOut(auth).then(() => { window.location.href = "index.html"; }); }
 $("logoutBtn").onclick = doLogout;
