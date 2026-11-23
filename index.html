@@ -13,6 +13,9 @@
         .input-group label { display: block; margin-bottom: 5px; color: #4b5563; font-size: 14px; font-weight: 500; }
         .input-group input { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
         .input-group input:focus { border-color: #6b21a8; outline: none; }
+        .pw-wrap { position: relative; }
+        .pw-wrap input { padding-right: 70px; }
+        .pw-toggle { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #6b21a8; font-size: 13px; font-weight: bold; cursor: pointer; padding: 6px 8px; }
         .error-message { color: #dc2626; font-size: 14px; margin-top: 5px; display: none; font-weight: 500; text-align: left; }
         .btn-login { width: 100%; padding: 12px; background-color: #15803d; color: white; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .btn-login:hover { background-color: #166534; }
@@ -42,7 +45,10 @@
 
         <div class="input-group">
             <label>Password</label>
-            <input type="password" id="password" placeholder="Enter password" required>
+            <div class="pw-wrap">
+    <input type="password" id="password" placeholder="Enter password" required>
+    <button type="button" class="pw-toggle" id="togglePw">Show</button>
+</div>
             <div class="error-message" id="passwordError">Incorrect password!</div>
         </div>
 
@@ -71,7 +77,13 @@
     const auth = getAuth(app);
 
     const ADMIN_EMAIL = "zubirosmani0@gmail.com";
-
+    document.getElementById('togglePw').addEventListener('click', function() {
+    const pw = document.getElementById('password');
+    const show = pw.type === 'password';
+    pw.type = show ? 'text' : 'password';
+    this.textContent = show ? 'Hide' : 'Show';
+    });
+    
     document.getElementById('forgotBtn').addEventListener('click', function() {
         window.location.href = "forgot.html";
     });
