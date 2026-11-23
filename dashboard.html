@@ -1,553 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Dashboard - ZABÀ EMAJUN ISLAME</title>
-    <style>
-        /* Global Root & Theme Setup */
-        :root {
-            --primary-color: #7e22ce;
-            --primary-glow: rgba(126, 34, 206, 0.2);
-            --success-color: #22c55e;
-            --danger-color: #dc2626;
-            --bg-neutral: #f0f2f5;
-            --surface-white: #ffffff;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Member Dashboard - JAVIISLAM TECH & LOGISTICS</title>
+<style>
+:root{
+  --maroon:#7f1d1d; --red:#b91c3c; --purple:#6b21a8; --green:#15803d; --gold:#c9a24b;
+  --cream:#f7f3e8; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --line:#e8e1cc;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--cream);color:var(--text);min-height:100vh;padding-bottom:90px}
+button{font-family:inherit}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-neutral);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+#splash,#gate{position:fixed;inset:0;background:var(--cream);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+#gate{display:none;z-index:60}
+.spin{width:42px;height:42px;border:4px solid #e9dfc0;border-top-color:var(--maroon);border-radius:50%;animation:sp .8s linear infinite;margin-bottom:14px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.gate-box{background:#fff;border-radius:16px;padding:28px 22px;max-width:360px;border-top:5px solid var(--red);box-shadow:0 6px 24px rgba(127,29,29,.15)}
+.gate-box h2{color:var(--maroon);margin:10px 0 8px;font-size:19px}
+.gate-box p{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 16px}
 
-        /* VPN Blocker Overlay Screen Layout */
-        #vpnBlockOverlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a;
-            color: white;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .vpn-box {
-            background: #1e293b;
-            padding: 40px;
-            border-radius: 16px;
-            border: 2px solid var(--danger-color);
-            max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
+.topbar{position:sticky;top:0;z-index:20;background:var(--maroon);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{width:40px;height:40px;border-radius:50%;border:2px solid var(--gold);background:#fff;object-fit:cover;flex-shrink:0}
+.brand span{font-weight:800;font-size:14px;letter-spacing:.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn-out{background:var(--red);color:#fff;border:1px solid rgba(255,255,255,.35);padding:8px 12px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer}
 
-        /* Main Header Navigation System */
-        .navbar {
-            background-color: var(--surface-white);
-            padding: 12px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .nav-logo {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: 3px solid var(--primary-color);
-            object-fit: cover;
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-        .nav-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary-color);
-            letter-spacing: 0.5px;
-        }
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .btn-logout {
-            background-color: var(--danger-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+.wrap{max-width:520px;margin:0 auto;padding:14px}
+.view{display:none;animation:fade .18s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-        /* 10-Minute Alert Notification System Placement */
-        .btn-ads-panel {
-            position: relative;
-            background: #0f172a;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .red-notification-dot {
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            width: 12px;
-            height: 12px;
-            background-color: var(--danger-color);
-            border-radius: 50%;
-            border: 2px solid white;
-            display: none; /* Dynamic control via loop */
-            animation: pulseGlow 1.5s infinite;
-        }
-        @keyframes pulseGlow {
-            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-        }
+.p-card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 4px 18px rgba(127,29,29,.12);border:1px solid var(--line)}
+.p-cover{height:84px;background:linear-gradient(120deg,var(--maroon),var(--purple))}
+.p-body{padding:0 18px 18px;text-align:center;margin-top:-52px}
+.avatar-wrap{position:relative;width:112px;height:112px;margin:0 auto}
+.avatar{width:112px;height:112px;border-radius:50%;border:4px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--purple),var(--maroon));overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.cam{position:absolute;right:-2px;bottom:2px;width:36px;height:36px;border-radius:50%;background:var(--green);border:3px solid #fff;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.p-name{font-size:21px;font-weight:800;color:var(--maroon);margin:10px 0 2px}
+.p-sub{font-size:13px;color:var(--muted)}
 
-        /* Workspace Grid Split Setup */
-        .main-layout {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr;
-            max-width: 1300px;
-            width: 95%;
-            margin: 25px auto;
-            gap: 20px;
-            box-sizing: border-box;
-        }
-        @media(min-width: 900px) {
-            .main-layout { grid-template-columns: 360px 1fr; }
-        }
+.money{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.m-box{border-radius:14px;padding:12px 10px;text-align:center;color:#fff}
+.m-box small{display:block;font-size:11px;letter-spacing:.8px;text-transform:uppercase;opacity:.9}
+.m-box b{display:block;font-size:20px;margin-top:4px}
+.m-bal{background:linear-gradient(135deg,#15803d,#166534)}
+.m-loan{background:linear-gradient(135deg,#b91c3c,#7f1d1d)}
 
-        /* Profiles, Statistics & Multi-Wallet Panels */
-        .profile-panel {
-            background: var(--surface-white);
-            padding: 25px;
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            height: fit-content;
-        }
-        .user-meta {
-            text-align: center;
-            border-bottom: 2px solid #f3f4f6;
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-        }
-        .user-avatar {
-            width: 95px;
-            height: 95px;
-            border-radius: 50%;
-            border: 3px solid var(--primary-color);
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-        .user-id-badge {
-            background: #f3e8ff;
-            color: var(--primary-color);
-            font-weight: 700;
-            padding: 5px 14px;
-            border-radius: 20px;
-            display: inline-block;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-        }
-        .wallet-card {
-            background: linear-gradient(135deg, var(--primary-color), #6b21a8);
-            color: white;
-            padding: 18px;
-            border-radius: 10px;
-            text-align: center;
-            margin-top: 15px;
-            box-shadow: 0 4px 10px rgba(126, 34, 206, 0.15);
-        }
-        .wallet-card.group-wallet {
-            background: linear-gradient(135deg, var(--success-color), #16a34a);
-            box-shadow: 0 4px 10px rgba(34, 197, 94, 0.15);
-        }
-        .wallet-amount {
-            font-size: 26px;
-            font-weight: 700;
-            margin-top: 5px;
-        }
+.sec{background:var(--card);border-radius:16px;margin-top:14px;padding:16px;border:1px solid var(--line);box-shadow:0 2px 10px rgba(0,0,0,.03)}
+.sec h3{margin:0 0 10px;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--purple)}
+.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.row:last-child{border-bottom:none}
+.row span:first-child{color:var(--muted);flex-shrink:0}
+.row span:last-child{font-weight:600;text-align:right;word-break:break-word}
+.bio{font-size:14px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:10px 0}
+.lock{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
 
-        /* Action Buttons Grid */
-        .action-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .btn-nav-action {
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            font-size: 14px;
-        }
+.btn-doc{display:block;width:100%;margin-top:14px;padding:13px;border:none;border-radius:12px;font-weight:800;font-size:15px;color:#3b2a00;background:linear-gradient(135deg,#f5d77a,#c9a24b);cursor:pointer;box-shadow:0 4px 14px rgba(201,162,75,.45)}
+.back{background:#fff;border:1.5px solid var(--purple);color:var(--purple);padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:12px}
 
-        /* Right Panel - Chat Infrastructure Workspace Window */
-        .workspace-panel {
-            background: var(--surface-white);
-            border-radius: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            min-height: 550px;
-        }
-        .workspace-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .btn-create-group {
-            background: var(--success-color);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+.d-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.d-head h2{margin:0;font-size:19px;color:var(--maroon)}
+.count{background:var(--maroon);color:#fff;padding:4px 12px;border-radius:50px;font-weight:800;font-size:14px}
+.d-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.d-card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 3px 12px rgba(0,0,0,.06)}
+.d-card img{width:100%;max-height:340px;object-fit:cover;display:block;background:#eee;cursor:zoom-in}
+.d-note{padding:12px 14px;font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.d-date{padding:0 14px 12px;font-size:12px;color:var(--muted)}
 
-        /* WhatsApp Style Default Empty Window Screen State */
-        .whatsapp-empty-state {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #9ca3af;
-            padding: 30px;
-            text-align: center;
-        }
-        .whatsapp-empty-state svg {
-            width: 90px;
-            height: 90px;
-            fill: #d1d5db;
-            margin-bottom: 15px;
-        }
+.search{width:100%;padding:13px 16px;border:1.5px solid var(--line);border-radius:50px;font-size:15px;background:#fff;margin-bottom:10px}
+.search:focus{outline:none;border-color:var(--purple)}
+.m-list{background:#fff;border-radius:14px;border:1px solid var(--line);overflow:hidden}
+.m-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid #f0ead6;cursor:pointer}
+.m-item:last-child{border-bottom:none}
+.m-item:active{background:#faf6ea}
+.m-av{width:50px;height:50px;border-radius:50%;border:2px solid var(--gold);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;background:linear-gradient(135deg,var(--purple),var(--maroon))}
+.m-av img{width:100%;height:100%;object-fit:cover}
+.m-info{min-width:0}
+.m-info b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-info small{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 
-        /* Active Channels/Group Grid Workspace Wrapper */
-        .group-list-view {
-            display: none;
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-        }
-        .chat-item-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #f3f4f6;
-            transition: background 0.2s;
-        }
-        .chat-item-row:hover {
-            background: #fdf4ff;
-        }
-        .chat-avatar-circle {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: #e5e7eb;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: #4b5563;
-            font-size: 18px;
-        }
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:2px solid var(--gold);display:flex;justify-content:space-around;align-items:flex-end;padding:6px 8px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+.nav button{flex:1;max-width:150px;background:none;border:none;color:var(--muted);font-size:12px;font-weight:700;padding:6px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav button .ic{font-size:22px;line-height:1}
+.nav button.on{color:var(--maroon)}
+.nav .nav-doc{position:relative;top:-14px;color:#3b2a00}
+.nav .nav-doc .ic{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:27px;background:linear-gradient(135deg,#ffe58a,#c9a24b);box-shadow:0 5px 16px rgba(201,162,75,.65);border:3px solid #fff}
+.nav .nav-doc.on{color:var(--maroon)}
 
-        /* Live Communication Interface Chat View Screen */
-        .active-chat-window {
-            display: none;
-            flex: 1;
-            flex-direction: column;
-            background: #efeae2; /* Classic WhatsApp Chat Area Hex Pattern */
-        }
-        .chat-window-header {
-            background: #f0f2f5;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #e1e1e1;
-        }
-        .chat-stream-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        /* Modern Structured Voice Message Layout Card Bubble */
-        .message-bubble {
-            background: white;
-            padding: 12px;
-            border-radius: 0 12px 12px 12px;
-            max-width: 75%;
-            align-self: flex-start;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .message-bubble.sender-self {
-            background: #d9fdd3; /* WhatsApp Self Incoming Chat Hex Green bubble match */
-            border-radius: 12px 0 12px 12px;
-            align-self: flex-end;
-        }
-        .voice-player-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .audio-wave-bar {
-            flex: 1;
-            height: 5px;
-            background: #cbd5e1;
-            border-radius: 2px;
-        }
-
-        .chat-footer-controls {
-            background: #f0f2f5;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .btn-voice-record {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        /* Interactive Shop and System Modal Panels */
-        .modal-view-screen {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 5000;
-        }
-        .modal-content-container {
-            background: var(--surface-white);
-            padding: 30px;
-            border-radius: 14px;
-            width: 90%;
-            max-width: 450px;
-            box-sizing: border-box;
-        }
-        .modal-input-field {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-        .modal-buttons-panel {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-
-        /* Shop Cards Display Framework Grid layout */
-        .shop-catalog-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-            margin-top: 15px;
-        }
-        .catalog-item-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #fafafa;
-        }
-
-        #loadingScreenOverlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-neutral);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 20px;
-        }
-    </style>
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:80;display:none;align-items:center;justify-content:center;padding:12px}
+#lightbox img{max-width:100%;max-height:100%;border-radius:8px}
+#toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#1f2937;color:#fff;padding:10px 18px;border-radius:50px;font-size:14px;z-index:90;display:none}
+</style>
 </head>
 <body>
 
-<!-- VPN Blocker Engine Shield UI -->
-<div id="vpnBlockOverlay">
-    <div class="vpn-box">
-        <h2 style="margin-top:0; color: #dc2626;">🛑 SECURITY ALERT: VPN DETECTED</h2>
-        <p style="font-size: 16px; line-height: 1.6;">Dear User, using a VPN or Proxy service is strictly prohibited on our platform to comply with Google Ads Security guidelines.</p>
-        <p style="font-weight: bold; color: #cbd5e1;">Please disable your VPN and refresh the webpage to restore access.</p>
-    </div>
+<div id="splash">
+  <div class="spin"></div>
+  <div style="color:var(--maroon);font-weight:700">Loading your account...</div>
 </div>
 
-<div id="loadingScreenOverlay">Syncing Secure Core Network...</div>
+<div id="gate">
+  <div class="gate-box">
+    <div style="font-size:42px" id="gateIcon">⏳</div>
+    <h2 id="gateTitle">Approval Pending</h2>
+    <p id="gateMsg">Your account is waiting for admin approval.</p>
+    <button class="btn-out" style="background:var(--maroon)" id="gateLogout">Logout</button>
+  </div>
+</div>
 
-<!-- Header Navigation System Terminal Section -->
-<nav class="navbar">
-    <div class="nav-brand">
-        <!-- Direct Image Link converted directly from Google Drive ID -->
-        <img class="nav-logo" src="https://lh3.googleusercontent.com/d/16JqDei6AtMnzPDgZenhBUxrbevlj18fN" alt="ZABÀ Logo">
-        <span class="nav-title">ZABÀ EMAJUN ISLAME</span>
-    </div>
-    <div class="nav-actions">
-        <button class="btn-ads-panel" id="adsSystemBtn">
-            <span>Offers & Ads</span>
-            <div class="red-notification-dot" id="adsNotificationBadge"></div>
-        </button>
-        <button class="btn-logout" id="accountLogoutTriggerBtn">Logout</button>
-    </div>
-</nav>
+<header class="topbar">
+  <div class="brand">
+    <img src="https://i.postimg.cc/28NBQ4WH/1781359235072-removebg-preview.png" alt="Logo">
+    <span>JAVIISLAM TECH &amp; LOGISTICS</span>
+  </div>
+  <button class="btn-out" id="logoutBtn">Logout</button>
+</header>
 
-<!-- Main Workspace Architecture Layout Frame Grid -->
-<main class="main-layout">
-    
-    <!-- Account Balances and Profiling Panel Side Dock Container -->
-    <section class="profile-panel">
-        <div class="user-meta">
-            <img class="user-avatar" id="userAvatarFrame" src="https://via.placeholder.com/150" alt="Avatar">
-            <h2 id="userMetaNameDisplay" style="margin: 5px 0; color: #1e293b; font-size: 22px;">Loading Name...</h2>
-            <div class="user-id-badge" id="userUniqueIdBadge">ID: Fetching...</div>
-        </div>
-
-        <div class="wallet-card">
-            <div style="font-size: 14px; opacity: 0.9; font-weight: 600;">Personal Wallet Balance</div>
-            <div class="wallet-amount" id="personalWalletBalanceDisplay">0.00 BDT</div>
-        </div>
-        
-        <div class="wallet-card group-wallet">
-            <div style="font-size: 14px; opacity: 0.9; font-weight: 600;">Active Group Balance</div>
-            <div class="wallet-amount" id="activeGroupWalletBalanceDisplay">0.00 BDT</div>
-        </div>
-
-        <div class="action-grid">
-            <button class="btn-nav-action" style="background: #e0f2fe; color: #0369a1;" id="openShopModalBtn">🛒 SHOP</button>
-            <button class="btn-nav-action" style="background: #fef3c7; color: #b45309;" id="openHelpDeskBtn">💬 Helpline</button>
-        </div>
-    </section>
-
-    <!-- Communication Hub Area Interface (WhatsApp Architecture Framework Screen Module) -->
-    <section class="workspace-panel">
-        
-        <!-- Standard Channel Workspace Navigation Window Wrapper -->
-        <div id="groupDirectoryLayoutContainer" style="display: flex; flex-direction: column; flex: 1;">
-            <div class="workspace-header">
-                <span style="font-weight: 700; font-size: 18px;">Conversations & Active Channels</span>
-                <button class="btn-create-group" id="createNewChannelTriggerBtn">+ New Group</button>
-            </div>
-
-            <!-- WhatsApp Clean Default Empty Frame Screen -->
-            <div class="whatsapp-empty-state" id="whatsappDefaultEmptyWindow">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12c0 2.34.81 4.5 2.14 6.21L3 21l2.89-1.11C7.5 21.19 9.66 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
-                <h3 style="margin: 0 0 10px 0; color: #4b5563;">No Active Group Ecosystem Windows</h3>
-                <p style="margin: 0; font-size: 14px; max-width: 325px;">Create a customized channel or input member IDs to initialize secure audio transmissions streaming engines.</p>
-            </div>
-
-            <!-- Populated Workspace Track Database Records Node Rows Output Elements -->
-            <div class="group-list-view" id="populatedChannelsListContainer"></div>
-        </div>
-
-        <!-- Chat Stream Window View Port Frame Interface Template Module -->
-        <div class="active-chat-window" id="activeGroupChatStreamViewWindow">
-            <div class="chat-window-header">
-                <div>
-                    <div style="font-weight: 700; color: #1e293b;" id="chatStreamHeaderChannelTitleName">Loading Room...</div>
-                    <div style="font-size: 12px; color: #64748b;" id="chatStreamHeaderChannelParticipantCounter">0 Participants</div>
-                </div>
-                <button class="btn-logout" style="background: #64748b;" id="closeActiveChatWindowReturnBtn">Back</button>
-            </div>
-            
-            <div class="chat-stream-body" id="chatMessagesStreamRenderingEngineBox">
-                <!-- Dynamically loaded voice bubble components injected post database callback here -->
-            </div>
-
-            <div class="chat-footer-controls">
-                <button class="btn-voice-record" id="voiceRecordingActionButton">🎙️</button>
-                <span style="font-size: 14px; color: #64748b; font-weight: 600;" id="recordingFeedbackTextLabel">Hold microphone icon to save high-fidelity cloud audio...</span>
-            </div>
-        </div>
-    </section>
+<main class="wrap">
+  <section class="view on" id="v-home"></section>
+  <section class="view" id="v-docs"></section>
+  <section class="view" id="v-members">
+    <input class="search" id="memberSearch" type="search" placeholder="🔍 Search by name, email or phone...">
+    <div class="m-list" id="memberList"></div>
+  </section>
+  <section class="view" id="v-other"></section>
 </main>
 
-<!-- Modal Windows Interface Framework -->
+<nav class="nav">
+  <button id="nav-home" class="on"><span class="ic">👤</span>Profile</button>
+  <button id="nav-docs" class="nav-doc"><span class="ic">📄</span>Documents</button>
+  <button id="nav-members"><span class="ic">👥</span>Members</button>
+</nav>
 
-<!-- 1. Establish New Communication Cluster Group Model Box UI -->
-<div class="modal-view-screen" id="createNewChannelPopupModal">
-    <div class="modal-content-container">
-        <h3 style="margin-top: 0; color: var(--primary-color);">Create New Group Cluster</h3>
-        <p style="font-size: 13px; color: #64748b; margin-top: -10px; margin-bottom: 20px;">Link unique 7-digit profile tokens together separated via commas.</p>
-        <input type="text" class="modal-input-field" id="newChannelNameInputField" placeholder="Enter Group Display Title">
-        <textarea class="modal-input-field" id="newChannelParticipantsArrayInput" placeholder="Enter Member IDs (e.g. ZAB1024, ZAB3044)" rows="3" style="resize:none;"></textarea>
-        <div class="modal-buttons-panel">
-            <button class="btn-logout" style="background:#cbd5e1; color:#475569;" id="closeNewChannelModalCancelBtn">Cancel</button>
-            <button class="btn-create-group" id="executeCreateChannelSubmissionBtn">Deploy Channel</button>
-        </div>
+<div id="lightbox"><img id="lightImg" alt=""></div>
+<div id="toast"></div>
+<input type="file" id="photoInput" accept="image/*" style="display:none">
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, onSnapshot, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
+  authDomain: "zaba-emajun-islam.firebaseapp.com",
+  projectId: "zaba-emajun-islam",
+  storageBucket: "zaba-emajun-islam.firebasestorage.app",
+  messagingSenderId: "593592059226",
+  appId: "1:593592059226:web:bfd81719f87e065dc19f63"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const ADMIN_EMAIL = "zubirosmani0@gmail.com";
+const $ = (id) => document.getElementById(id);
+
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function money(n){ return "৳ " + Number(n || 0).toLocaleString("en-IN"); }
+function nameOf(d){ return d.fullName || d.name || d.firstName || "Member"; }
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.style.display = "block";
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.style.display = "none", 2400);
+}
+function avatarHTML(d){
+  const initial = esc(nameOf(d).trim().charAt(0).toUpperCase() || "?");
+  return d.photoURL ? `<img src="${esc(d.photoURL)}" alt="">` : initial;
+}
+
+let me = null;
+let myData = null;
+let membersCache = null;
+let docsFor = null;
+
+function show(view){
+  ["home","docs","members","other"].forEach(v => $("v-" + v).classList.toggle("on", v === view));
+  $("nav-home").classList.toggle("on", view === "home");
+  $("nav-docs").classList.toggle("on", view === "docs" && !!docsFor && docsFor.uid === me.uid);
+  $("nav-members").classList.toggle("on", view === "members" || view === "other");
+  window.scrollTo(0, 0);
+}
+
+function profileHTML(d, isSelf){
+  const rows = [
+    ["First Name", d.firstName],
+    ["Full Name", d.fullName || d.name],
+    ["Birth Place", d.birthPlace],
+    ["Phone", d.mobileNumber || d.phone],
+    ["Email", d.email]
+  ].map(r => `<div class="row"><span>${r[0]}</span><span>${esc(r[1] || "—")}</span></div>`).join("");
+
+  return `
+  <div class="p-card">
+    <div class="p-cover"></div>
+    <div class="p-body">
+      <div class="avatar-wrap">
+        <div class="avatar">${avatarHTML(d)}</div>
+        ${isSelf ? `<div class="cam" id="camBtn" title="Change photo">📷</div>` : ""}
+      </div>
+      <div class="p-name">${esc(nameOf(d))}</div>
+      <div class="p-sub">${esc(d.occupation || "Member")}</div>
+      <div class="money">
+        <div class="m-box m-bal"><small>Deposit / Balance</small><b>${money(d.balance)}</b></div>
+        <div class="m-box m-loan"><small>Loan</small><b>${money(d.loan)}</b></div>
+      </div>
     </div>
-</div>
+  </div>
+  <div class="sec">
+    <h3>About</h3>
+    ${d.bio ? `<div class="bio">${esc(d.bio)}</div>` : `<div class="empty">No bio added yet.</div>`}
+  </div>
+  <div class="sec">
+    <h3>Member Information</h3>
+    ${rows}
+    <div class="lock">🔒 Only the admin can change this information</div>
+  </div>`;
+}
 
-<!-- 2. Secure Reward Matrix Shop Panel Window Modal UI -->
-<div class="modal-view-screen" id="platformShopCatalogModal">
-    <div class="modal-content-container" style="max-width: 500px;">
-        <h3 style="margin-top:0; color: var(--primary-color);">ZABÀ Premium Rewards Shop</h3>
-        <div class="shop-catalog-grid" id="shopCatalogCardsRenderingContainer">
-            <!-- Mock Product Framework Layout Item Row Card -->
-            <div class="catalog-item-card">
-                <div>
-                    <div style="font-weight:700; color:#1e293b;">Premium High-Performance Laptop</div>
-                    <div style="font-size:13px; color:var(--primary-color); font-weight:600; margin-top:3px;">Cost: 500,000 Coins</div>
-                </div>
-                <button class="btn-create-group" onclick="processOrderCheckoutTrigger('Laptop', 500000)">Claim Reward</button>
-            </div>
-        </div>
-        <div class="modal-button
+function renderHome(){
+  $("v-home").innerHTML = profileHTML(myData, true);
+  const cam = $("camBtn");
+  if (cam) cam.onclick = () => $("photoInput").click();
+}
+
+function resizeSquare(file, size, quality){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const m = Math.min(img.width, img.height);
+      const sx = (img.width - m) / 2, sy = (img.height - m) / 2;
+      const c = document.createElement("canvas"); c.width = c.height = size;
+      c.getContext("2d").drawImage(img, sx, sy, m, m, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = () => reject(new Error("Invalid image"));
+    img.src = url;
+  });
+}
+
+$("photoInput").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  e.target.value = "";
+  if (!file) return;
+  try {
+    toast("Uploading photo...");
+    const data = await resizeSquare(file, 400, 0.8);
+    await updateDoc(doc(db, "members", me.uid), { photoURL: data });
+    toast("Profile photo updated ✔");
+  } catch (err) {
+    toast("Photo upload failed");
+    console.error(err);
+  }
+});
+
+async function openDocs(uid, title, backTo){
+  docsFor = { uid, title, backTo };
+  show("docs");
+  const box = $("v-docs");
+  box.innerHTML = `<div class="empty">Loading documents...</div>`;
+  try {
+    const snap = await getDocs(collection(db, "members", uid, "documents"));
+    const items = [];
+    snap.forEach(s => items.push({ id: s.id, ...s.data() }));
+    items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+    box.innerHTML = `
+      ${backTo === "other" ? `<button class="back" id="docBack">← Back to profile</button>` : ""}
+      <div class="d-head"><h2>📄 ${esc(title)}</h2><span class="count">${items.length}</span></div>
+      ${items.length ? `<div class="d-grid">${items.map(it => `
+        <div class="d-card">
+          ${it.image ? `<img src="${esc(it.image)}" alt="Document" data-full="1">` : ""}
+          ${it.note ? `<div class="d-note">${esc(it.note)}</div>` : ""}
+          <div class="d-date">${it.createdAt?.seconds ? new Date(it.createdAt.seconds * 1000).toLocaleDateString() : ""}</div>
+        </div>`).join("")}</div>`
+      : `<div class="sec"><div class="empty">No documents yet.<br><b style="font-size:26px">0</b></div></div>`}
+      <div class="lock">🔒 Documents can only be added by the admin</div>`;
+
+    box.querySelectorAll("img[data-full]").forEach(im => im.onclick = () => openLight(im.src));
+    const bk = $("docBack"); if (bk) bk.onclick = () => show("other");
+  } catch (err) {
+    box.innerHTML = `<div class="sec"><div class="empty">Could not load documents.<br>${esc(err.message)}</div></div>`;
+  }
+}
+
+function openLight(src){ $("lightImg").src = src; $("lightbox").style.display = "flex"; }
+$("lightbox").onclick = () => { $("lightbox").style.display = "none"; };
+
+async function loadMembers(){
+  if (membersCache) return membersCache;
+  const snap = await getDocs(collection(db, "members"));
+  const list = [];
+  snap.forEach(s => {
+    const d = s.data();
+    if ((d.status || "pending") === "active") list.push({ id: s.id, ...d });
+  });
+  list.sort((a, b) => nameOf(a).localeCompare(nameOf(b)));
+  membersCache = list;
+  return list;
+}
+
+function renderMemberList(){
+  const q = $("memberSearch").value.trim().toLowerCase();
+  const list = (membersCache || []).filter(d =>
+    !q || [nameOf(d), d.email, d.mobileNumber, d.phone, d.firstName].some(x => String(x || "").toLowerCase().includes(q)));
+  $("memberList").innerHTML = list.length ? list.map(d => `
+    <div class="m-item" data-id="${esc(d.id)}">
+      <div class="m-av">${avatarHTML(d)}</div>
+      <div class="m-info"><b>${esc(nameOf(d))}</b><small>${esc(d.occupation || d.email || "")}</small></div>
+    </div>`).join("") : `<div class="empty" style="padding:22px">No members found.</div>`;
+  $("memberList").querySelectorAll(".m-item").forEach(el => el.onclick = () => openOther(el.dataset.id));
+}
+
+async function openMembers(){
+  show("members");
+  membersCache = null; // refresh each time so new photos/approvals show up
+  $("memberList").innerHTML = `<div class="empty" style="padding:22px">Loading members...</div>`;
+  try { await loadMembers(); renderMemberList(); }
+  catch (err) { $("memberList").innerHTML = `<div class="empty" style="padding:22px">Could not load members.<br>${esc(err.message)}</div>`; }
+}
+$("memberSearch").addEventListener("input", renderMemberList);
+
+function openOther(uid){
+  if (uid === me.uid){ show("home"); return; }
+  const d = (membersCache || []).find(x => x.id === uid);
+  if (!d) return;
+  $("v-other").innerHTML = `
+    <button class="back" id="otherBack">← Back</button>
+    ${profileHTML(d, false)}
+    <button class="btn-doc" id="otherDocs">📄 Documents</button>`;
+  $("otherBack").onclick = () => show("members");
+  $("otherDocs").onclick = () => openDocs(uid, nameOf(d) + "'s Documents", "other");
+  show("other");
+}
+
+$("nav-home").onclick = () => show("home");
+$("nav-docs").onclick = () => openDocs(me.uid, "My Documents", "home");
+$("nav-members").onclick = openMembers;
+
+function doLogout(){ signOut(auth).then(() => { window.location.href = "index.html"; }); }
+$("logoutBtn").onclick = doLogout;
+$("gateLogout").onclick = doLogout;
+
+function gate(icon, title, msg){
+  $("splash").style.display = "none";
+  $("gateIcon").textContent = icon; $("gateTitle").textContent = title; $("gateMsg").textContent = msg;
+  $("gate").style.display = "flex";
+}
+
+let started = false;
+onAuthStateChanged(auth, (user) => {
+  if (!user){ window.location.href = "index.html"; return; }
+  me = user;
+  if (started) return;
+  started = true;
+
+  const isAdmin = (user.email || "").toLowerCase() === ADMIN_EMAIL;
+
+  onSnapshot(doc(db, "members", user.uid), (snap) => {
+    if (!snap.exists()){
+      gate("❓", "Profile Not Found", "No member record was found for this account. Please contact the admin.");
+      return;
+    }
+    myData = snap.data();
+    const status = myData.status || "pending";
+
+    if (!isAdmin && status === "blocked"){
+      gate("🚫", "Account Blocked", "Your account has been suspended. Please contact the admin.");
+      return;
+    }
+    if (!isAdmin && status !== "active"){
+      gate("⏳", "Approval Pending", "Your registration is complete. Please wait while the admin approves your account.");
+      return;
+    }
+    $("gate").style.display = "none";
+    $("splash").style.display = "none";
+    renderHome();
+  }, (err) => {
+    gate("⚠️", "Connection Problem", "Could not load your profile: " + err.message);
+  });
+});
+
+setTimeout(() => {
+  if ($("splash").style.display !== "none" && !myData){
+    gate("⚠️", "Taking too long", "Please check your internet connection and reload the page.");
+  }
+}, 12000);
+</script>
+</body>
+</html>
