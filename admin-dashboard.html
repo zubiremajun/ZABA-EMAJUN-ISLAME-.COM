@@ -137,6 +137,8 @@
   <div style="background:#fff;border-radius:14px;max-width:520px;width:100%;padding:20px;border-top:5px solid #7f1d1d;">
     <h3 id="mgTitle" style="margin:0 0 15px;color:#7f1d1d;font-size:16px;word-break:break-word"></h3>
 
+    <div id="mgInfo" style="background:#faf6ea;border:1px solid #e5e0cf;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.8;margin-bottom:10px"></div>
+
     <label class="mg-l">Occupation / Work</label>
     <input class="mg-i" id="mgOccupation" type="text" placeholder="e.g. Businessman">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -279,6 +281,12 @@
         if (!d) return;
         manageId = id;
         document.getElementById("mgTitle").innerText = (d.fullName || d.name || "Member") + " — " + (d.email || "");
+        document.getElementById("mgInfo").innerHTML =
+            "<b>Father:</b> " + esc(d.fatherName || "—") + "<br>" +
+            "<b>Mother:</b> " + esc(d.motherName || "—") + "<br>" +
+            "<b>Birth Place:</b> " + esc(d.birthPlace || "—") + "<br>" +
+            "<b>Present Address:</b> " + esc(d.presentAddress || "—") + "<br>" +
+            "<b>Phone:</b> " + esc(d.mobileNumber || d.phone || "—");
         document.getElementById("mgOccupation").value = d.occupation || "";
         document.getElementById("mgBalance").value = d.balance || 0;
         document.getElementById("mgLoan").value = d.loan || 0;
