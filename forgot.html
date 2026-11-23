@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forgot Password - JAVIISLAM TECH & LOGISTICS</title>
+<style>
+:root{--maroon:#7f1d1d;--red:#b91c3c;--purple:#6b21a8;--green:#15803d;--gold:#c9a24b;--cream:#f7f3e8;--muted:#6b7280}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--cream);margin:0;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
+.card{background:#fff;width:100%;max-width:400px;border-radius:16px;border-top:5px solid var(--red);box-shadow:0 6px 24px rgba(127,29,29,.16);padding:24px 24px 28px;text-align:center}
+.back{display:inline-block;background:#fff;border:1.5px solid var(--purple);color:var(--purple);padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.back-row{text-align:left;margin-bottom:8px}
+.logo{width:96px;height:96px;border-radius:50%;border:3px solid var(--gold);object-fit:cover}
+.co{font-size:17px;font-weight:800;color:var(--maroon);letter-spacing:.8px;margin:8px 0 14px;text-transform:uppercase}
+h2{margin:0 0 6px;font-size:20px;color:#333}
+.sub{margin:0 0 18px;font-size:13.5px;color:var(--muted);line-height:1.6}
+.f{text-align:left;margin-bottom:14px}
+.f label{display:block;font-size:13px;color:#4b5563;margin-bottom:5px;font-weight:600}
+.f input{width:100%;padding:12px;border:1.5px solid #d9d4c3;border-radius:9px;font-size:16px;font-family:inherit}
+.f input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(107,33,168,.12)}
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-size:16px;font-weight:800;color:#fff;background:var(--green);cursor:pointer;font-family:inherit}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:#c8c8c8;cursor:not-allowed}
+.err{display:none;background:#fef2f2;border-left:4px solid var(--red);color:#7f1d1d;padding:10px 12px;border-radius:6px;font-size:13.5px;margin-bottom:12px;text-align:left}
+.ok{display:none;background:#f0fdf4;border-left:4px solid var(--green);color:#14532d;padding:12px;border-radius:6px;font-size:13.5px;line-height:1.6;margin-bottom:14px;text-align:left}
+.note{background:#fffbeb;border-left:4px solid var(--gold);color:#78350f;padding:10px 12px;border-radius:6px;font-size:13px;text-align:left;margin-top:14px;display:none}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="back-row"><button type="button" class="back" id="backBtn">&larr; Back</button></div>
+
+  <img class="logo" src="https://i.postimg.cc/28NBQ4WH/1781359235072-removebg-preview.png" alt="JAVIISLAM TECH & LOGISTICS Logo">
+  <div class="co">JAVIISLAM TECH &amp; LOGISTICS</div>
+
+  <h2>Forgot Password</h2>
+  <p class="sub">Enter your registered email address. We will send you a link to reset your password.</p>
+
+  <div class="err" id="err"></div>
+  <div class="ok" id="ok"></div>
+
+  <form id="forgotForm" novalidate>
+    <div class="f">
+      <label for="email">Email Address</label>
+      <input id="email" type="email" autocomplete="email" placeholder="you@gmail.com">
+    </div>
+    <button class="btn" type="submit" id="sendBtn">Send Reset Link</button>
+  </form>
+
+  <div class="note" id="note">📩 Didn't get the email? Check your <b>Spam</b> folder, or wait a minute and try again.</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
+  authDomain: "zaba-emajun-islam.firebaseapp.com",
+  projectId: "zaba-emajun-islam",
+  storageBucket: "zaba-emajun-islam.firebasestorage.app",
+  messagingSenderId: "593592059226",
+  appId: "1:593592059226:web:bfd81719f87e065dc19f63"
+};
+const auth = getAuth(initializeApp(firebaseConfig));
+const $ = (id) => document.getElementById(id);
+
+$("backBtn").onclick = () => { window.location.href = "index.html"; };
+
+let cooldown = null;
+function startCooldown(btn, sec){
+  let left = sec; btn.disabled = true;
+  clearInterval(cooldown);
+  cooldown = setInterval(() => {
+    btn.textContent = "Send again in " + left + "s";
+    if (--left < 0){ clearInterval(cooldown); btn.disabled = false; btn.textContent = "Send Reset Link"; }
+  }, 1000);
+  btn.textContent = "Send again in " + left + "s";
+}
+
+$("forgotForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("err").style.display = "none"; $("ok").style.display = "none";
+  const email = $("email").value.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    $("err").textContent = "Please enter a valid email address."; $("err").style.display = "block"; return;
+  }
+  const btn = $("sendBtn");
+  btn.disabled = true; btn.textContent = "Sending...";
+  try {
+    await sendPasswordResetEmail(auth, email);
+    $("ok").innerHTML = "✔ If <b>" + email.replace(/[<>&"']/g, "") + "</b> is registered, a password reset link has been sent. Open your email and click the link to set a new password.";
+    $("ok").style.display = "block";
+    $("note").style.display = "block";
+    startCooldown(btn, 60);
+  } catch (err) {
+    console.error(err.code);
+    let msg = "Could not send the reset link. Please try again.";
+    if (err.code === "auth/invalid-email") msg = "Please enter a valid email address.";
+    else if (err.code === "auth/too-many-requests") msg = "Too many attempts. Please wait a few minutes and try again.";
+    else if (err.code === "auth/network-request-failed") msg = "Network problem. Please check your internet connection.";
+    $("err").textContent = msg; $("err").style.display = "block";
+    btn.disabled = false; btn.textContent = "Send Reset Link";
+  }
+});
+</script>
+</body>
+</html>
