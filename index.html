@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Login - JAVIISLAM TECH & LOGISTICS</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f7f3e8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f7f3e8; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; box-sizing: border-box; }
         .login-box { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(127,29,29,0.18); border-top: 5px solid #b91c3c; width: 100%; max-width: 380px; box-sizing: border-box; text-align: center; }
         .logo { width: 100px; height: 100px; margin-bottom: 10px; border-radius: 50%; border: 3px solid #c9a24b; object-fit: cover; }
         h2 { color: #7f1d1d; margin-bottom: 20px; font-size: 20px; }
@@ -17,8 +17,14 @@
         .btn-login { width: 100%; padding: 12px; background-color: #15803d; color: white; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .btn-login:hover { background-color: #166534; }
         .btn-login:disabled { background-color: #9ca3af; cursor: not-allowed; }
-        .reg-link { margin-top: 20px; font-size: 14px; color: #4b5563; }
-        .reg-link a { color: #b91c3c; text-decoration: none; font-weight: bold; }
+
+        .btn-forgot { width: 100%; padding: 11px; background: #ffffff; color: #6b21a8; border: 1.5px solid #6b21a8; font-size: 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 12px; }
+        .btn-forgot:hover { background: #6b21a8; color: #ffffff; }
+
+        .divider { display: flex; align-items: center; gap: 10px; margin: 20px 0 14px; color: #9ca3af; font-size: 13px; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #e5e0cf; }
+        .btn-register { width: 100%; padding: 12px; background: #b91c3c; color: #ffffff; border: none; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-register:hover { background: #991b1b; }
     </style>
 </head>
 <body>
@@ -26,26 +32,26 @@
 <div class="login-box">
     <img class="logo" src="https://i.postimg.cc/28NBQ4WH/1781359235072-removebg-preview.png" alt="JAVIISLAM TECH & LOGISTICS Logo">
     <h2>JAVIISLAM TECH & LOGISTICS</h2>
-    
+
     <form id="mainLoginForm">
         <div class="input-group">
             <label>Email Address</label>
             <input type="email" id="email" placeholder="Enter email" required>
             <div class="error-message" id="emailError">Email is not registered!</div>
         </div>
-        
+
         <div class="input-group">
             <label>Password</label>
             <input type="password" id="password" placeholder="Enter password" required>
             <div class="error-message" id="passwordError">Incorrect password!</div>
         </div>
-        
+
         <button type="submit" class="btn-login" id="submitBtn">Sign In</button>
+        <button type="button" class="btn-forgot" id="forgotBtn">Forgot Password?</button>
     </form>
 
-    <div class="reg-link">
-        Don't have an account? <a href="register.html">Register Here</a>
-    </div>
+    <div class="divider">Don't have an account?</div>
+    <button type="button" class="btn-register" id="registerBtn">Register Here</button>
 </div>
 
 <script type="module">
@@ -66,6 +72,13 @@
 
     const ADMIN_EMAIL = "zubirosmani0@gmail.com";
 
+    document.getElementById('forgotBtn').addEventListener('click', function() {
+        window.location.href = "forgot.html";
+    });
+    document.getElementById('registerBtn').addEventListener('click', function() {
+        window.location.href = "register.html";
+    });
+
     document.getElementById('mainLoginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -81,7 +94,7 @@
 
         try {
             await signInWithEmailAndPassword(auth, emailInput, passwordInput);
-            
+
             if (emailInput === ADMIN_EMAIL) {
                 window.location.href = "admin-dashboard.html";
             } else {
@@ -91,7 +104,7 @@
         } catch (error) {
             submitBtn.disabled = false;
             submitBtn.innerText = "Sign In";
-            
+
             console.error("Firebase Auth Error Code:", error.code);
 
             if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
