@@ -199,7 +199,7 @@ let membersCache = null;
 let docsFor = null;
 
 function show(view){
-  ["home","docs","members","other"].forEach(v => $("v-" + v).classList.toggle("on", v === view));
+ ["home","docs","members","other","owners"].forEach(v => $("v-" + v).classList.toggle("on", v === view));
   $("nav-home").classList.toggle("on", view === "home");
   $("nav-docs").classList.toggle("on", view === "docs" && !!docsFor && docsFor.uid === me.uid);
   $("nav-members").classList.toggle("on", view === "members" || view === "other");
