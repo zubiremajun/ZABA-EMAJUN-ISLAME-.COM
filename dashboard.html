@@ -367,35 +367,438 @@ function openOther(uid){
 $("nav-home").onclick = () => show("home");
 $("nav-docs").onclick = () => openDocs(me.uid, "My Documents", "home");
 $("nav-members").onclick = openMembers;
-  /* ---------- Owners page ---------- */
-// >>> এখানে তিন মালিকের নাম, পদবি ও ছবির লিংক লিখুন <<<
 const OWNERS = [
-  { name: "Owner 1 Name", role: "Founder & Chairman", photo: "" },
-  { name: "Owner 2 Name", role: "Managing Director",  photo: "" },
-  { name: "Owner 3 Name", role: "Director",           photo: "" }
+  {
+    name: "মোহাম্মদ জুবায়ের",
+    role: {
+      bn: "কোম্পানির মালিক ও প্রতিষ্ঠাতা",
+      en: "Company Owner & Founder",
+      ur: "کمپنی کے مالک اور بانی"
+    },
+    photo: "data:image/jpeg;base64,{{ZUBAIR_IMAGE}}",
+    bio: {
+      bn: `মোহাম্মদ জুবায়ের কোম্পানির মালিক ও প্রতিষ্ঠাতা। তিনি একজন সিনিয়র ওয়েব ও সফটওয়্যার ডেভেলপার। HTML, CSS, JavaScript, Firebase এবং আধুনিক ওয়েব প্রযুক্তি ব্যবহার করে ওয়েবসাইট, ড্যাশবোর্ড, অ্যাপের ইন্টারফেস ও ব্যাকএন্ড সিস্টেম তৈরিতে কাজ করেন। সফটওয়্যার পরিকল্পনা, সমস্যা সমাধান, নিরাপদ ডেটা ব্যবস্থাপনা এবং নতুন ডিজিটাল সেবা তৈরিতে তাঁর বিশেষ আগ্রহ ও দক্ষতা রয়েছে।
+
+জন্মস্থান: মিয়ানমারের মংডু
+পিতার নাম: ওসমান
+মাতার নাম: ইয়াসমিন
+বর্তমান অবস্থান: বাংলাদেশ`,
+      en: `Mohammad Zubair is the owner and founder of the company. He is a senior web and software developer who works with HTML, CSS, JavaScript, Firebase, and modern web technologies. His work includes building websites, dashboards, app interfaces, and backend systems. His key areas include software planning, problem-solving, secure data management, and developing new digital services.
+
+Place of birth: Maungdaw, Myanmar
+Father: Osman
+Mother: Yasmin
+Current location: Bangladesh`,
+      ur: `محمد زبیر کمپنی کے مالک اور بانی ہیں۔ وہ سینئر ویب اور سافٹ ویئر ڈویلپر ہیں اور HTML، CSS، JavaScript، Firebase اور جدید ویب ٹیکنالوجیز کے ساتھ کام کرتے ہیں۔ ان کے کام میں ویب سائٹس، ڈیش بورڈز، ایپ انٹرفیس اور بیک اینڈ سسٹمز بنانا شامل ہے۔
+
+جائے پیدائش: ماؤنگڈو، میانمار
+والد: عثمان
+والدہ: یاسمین
+موجودہ مقام: بنگلہ دیش`
+    }
+  },
+  {
+    name: "মোহাম্মদ আনোছ",
+    role: {
+      bn: "ম্যানেজিং ডিরেক্টর — ১",
+      en: "Managing Director — 1",
+      ur: "مینیجنگ ڈائریکٹر — 1"
+    },
+    photo: "data:image/jpeg;base64,{{ANOS_IMAGE}}",
+    bio: {
+      bn: `মোহাম্মদ আনোছ কোম্পানির ম্যানেজিং ডিরেক্টর (১)। তিনি নেতৃত্ব, কৌশলগত পরিকল্পনা, প্রশাসনিক সমন্বয় এবং গুরুত্বপূর্ণ সিদ্ধান্ত গ্রহণে কাজ করেন। প্রতিষ্ঠানের লক্ষ্য নির্ধারণ, টিম পরিচালনা, কাজের অগ্রগতি পর্যালোচনা, সম্পদ ব্যবস্থাপনা এবং বিভিন্ন বিভাগের মধ্যে সমন্বয় বজায় রাখা তাঁর প্রধান দায়িত্বের ক্ষেত্র। দেশের ও মানুষের কল্যাণে ইতিবাচক, আইনসম্মত ও দায়িত্বশীল উদ্যোগকে তিনি গুরুত্ব দেন।
+
+জন্মস্থান: মিয়ানমারের মংডু
+পিতার নাম: মৌলভী হাফেজ আহমদ
+বর্তমান অবস্থান: বাংলাদেশ, ক্যাম্প ১২`,
+      en: `Mohammad Anos is Managing Director (1). His focus areas are leadership, strategic planning, administrative coordination, and decision-making. His responsibilities include setting organizational goals, guiding teams, reviewing progress, managing resources, and coordinating across departments. He values positive, lawful, and responsible initiatives that benefit people and the community.
+
+Place of birth: Maungdaw, Myanmar
+Father: Maulvi Hafez Ahmed
+Current location: Bangladesh, Camp 12`,
+      ur: `محمد انوس مینیجنگ ڈائریکٹر (1) ہیں۔ ان کی توجہ قیادت، حکمتِ عملی کی منصوبہ بندی، انتظامی رابطہ کاری اور فیصلے کرنے پر ہے۔ ان کی ذمہ داریوں میں ادارے کے اہداف طے کرنا، ٹیموں کی رہنمائی، کام کی پیش رفت کا جائزہ اور وسائل کا انتظام شامل ہے۔
+
+جائے پیدائش: ماؤنگڈو، میانمار
+والد: مولوی حافظ احمد
+موجودہ مقام: بنگلہ دیش، کیمپ 12`
+    }
+  },
+  {
+    name: "মোঃ আব্দুল্লাহ",
+    role: {
+      bn: "ম্যানেজিং ডিরেক্টর — ২",
+      en: "Managing Director — 2",
+      ur: "مینیجنگ ڈائریکٹر — 2"
+    },
+    photo: "data:image/jpeg;base64,{{ABDULLAH_IMAGE}}",
+    bio: {
+      bn: `মোঃ আব্দুল্লাহ কোম্পানির ম্যানেজিং ডিরেক্টর (২)। তাঁর বিশেষ আগ্রহ গবেষণা, তথ্য যাচাই, পর্যবেক্ষণ, ঝুঁকি মূল্যায়ন এবং সমস্যা বিশ্লেষণে। নির্ভরযোগ্য ও প্রকাশ্য তথ্যের ভিত্তিতে পরিস্থিতি বোঝা, সম্ভাব্য ঝুঁকি চিহ্নিত করা, প্রমাণ যাচাই করা এবং ব্যবস্থাপনাকে সিদ্ধান্ত নিতে সহায়তা করা তাঁর কাজের ক্ষেত্র। সব কার্যক্রম আইন, অনুমতি ও ব্যক্তিগত গোপনীয়তার প্রতি সম্মান রেখে পরিচালিত হয়।
+
+তিনি অন্য দুই পরিচালকের সঙ্গে সমানভাবে গুরুত্বপূর্ণ সিদ্ধান্ত ও কোম্পানির উন্নয়নমূলক কাজে অংশ নেন।`,
+      en: `Md. Abdullah is Managing Director (2). His areas of interest include research, information verification, observation, risk assessment, and problem analysis. He helps understand situations using reliable, publicly available information, identify potential risks, verify evidence, and support management decisions. All activities must respect the law, authorization, and personal privacy.
+
+He works alongside the other two leaders as an equal participant in important decisions and company development.`,
+      ur: `محمد عبداللہ مینیجنگ ڈائریکٹر (2) ہیں۔ ان کی دلچسپی تحقیق، معلومات کی تصدیق، مشاہدے، خطرات کے جائزے اور مسائل کے تجزیے میں ہے۔ وہ قابلِ اعتماد اور عوامی معلومات کی بنیاد پر حالات کو سمجھنے، ممکنہ خطرات کی نشاندہی اور انتظامیہ کے فیصلوں میں مدد کرتے ہیں۔ تمام سرگرمیاں قانون اور ذاتی رازداری کا احترام کرتے ہوئے انجام دی جاتی ہیں۔
+
+وہ دیگر دونوں رہنماؤں کے ساتھ اہم فیصلوں اور کمپنی کی ترقی میں برابر کے شریک ہیں۔`
+    }
+  }
 ];
 
-// >>> কোম্পানি, অর্ডার ইত্যাদি সম্পর্কে লেখা এখানে লিখুন <<<
-const OWNER_INFO = [
-  { title: "About Our Company", text: "Write about your company here." },
-  { title: "Orders",            text: "Write how members can place orders and how orders work." },
-  { title: "Contact",           text: "Write your office address and phone number here." }
-];
+const OWNER_LABELS = {
+  bn: {
+    details: "বিস্তারিত দেখুন",
+    hide: "বিস্তারিত বন্ধ করুন",
+    expertise: "দক্ষতা ও পরিচিতি",
+    team: "সমন্বিত নেতৃত্ব",
+    teamText: "তিনজন পরিচালক নিজ নিজ দক্ষতার ক্ষেত্রে নেতৃত্ব দেন এবং কোম্পানির গুরুত্বপূর্ণ সিদ্ধান্ত ও উন্নয়নমূলক কাজে একসঙ্গে অংশ নেন।",
+    lang: "ভাষা নির্বাচন"
+  },
+  en: {
+    details: "View details",
+    hide: "Hide details",
+    expertise: "Expertise & Profile",
+    team: "United Leadership",
+    teamText: "The three leaders contribute their respective strengths and work together on important company decisions and development.",
+    lang: "Choose language"
+  },
+  ur: {
+    details: "تفصیلات دیکھیں",
+    hide: "تفصیلات بند کریں",
+    expertise: "مہارت اور تعارف",
+    team: "مشترکہ قیادت",
+    teamText: "تینوں رہنما اپنی اپنی مہارت کے مطابق قیادت کرتے ہیں اور کمپنی کے اہم فیصلوں اور ترقی کے لیے مل کر کام کرتے ہیں۔",
+    lang: "زبان منتخب کریں"
+  }
+};
 
-function openOwners(){
-  $("v-owners").innerHTML =
-    OWNERS.map(o => `
-      <div class="o-card">
-        <div class="o-photo">${o.photo ? `<img src="${esc(o.photo)}" alt="">` : esc(o.name.charAt(0).toUpperCase())}</div>
-        <div class="o-name">${esc(o.name)}</div>
-        <div class="o-role">${esc(o.role)}</div>
-      </div>`).join("") +
-    OWNER_INFO.map(i => `
-      <div class="sec o-info"><h3>${esc(i.title)}</h3><p>${esc(i.text)}</p></div>`).join("");
+/* Premium Owners Design */
+(function addOwnersStyles() {
+  if (document.getElementById("premium-owners-style")) return;
+
+  const style = document.createElement("style");
+  style.id = "premium-owners-style";
+
+  style.textContent = `
+    #v-owners {
+      padding-bottom: 18px;
+    }
+
+    .owners-heading {
+      text-align: center;
+      margin: 4px 0 18px;
+    }
+
+    .owners-heading h2 {
+      margin: 0;
+      color: var(--maroon);
+      font-size: 22px;
+      font-weight: 850;
+    }
+
+    .owners-heading p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .owners-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .owner-premium-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px 18px;
+      text-align: center;
+      box-shadow: 0 7px 22px rgba(65,35,15,.08);
+    }
+
+    .owner-premium-photo {
+      width: 132px;
+      height: 132px;
+      margin: 0 auto 13px;
+      border: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #eee;
+      box-shadow: 0 8px 22px rgba(20,30,60,.16);
+    }
+
+    .owner-premium-photo img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      border: 0;
+      border-radius: 50%;
+    }
+
+    .owner-premium-name {
+      font-size: 20px;
+      line-height: 1.35;
+      font-weight: 850;
+      color: var(--maroon);
+      margin: 0 0 5px;
+    }
+
+    .owner-premium-role {
+      font-size: 13px;
+      color: #6b21a8;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    .owner-detail-btn {
+      width: 100%;
+      max-width: 250px;
+      border: 0;
+      border-radius: 11px;
+      padding: 12px 18px;
+      background: linear-gradient(135deg,#2563eb,#1d4ed8);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 5px 14px rgba(37,99,235,.24);
+      cursor: pointer;
+    }
+
+    .owner-detail-panel {
+      display: none;
+      text-align: left;
+      margin-top: 17px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .owner-detail-panel.open {
+      display: block;
+      animation: fade .2s ease;
+    }
+
+    .owner-detail-panel h3 {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-size: 14px;
+    }
+
+    .owner-language-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+
+    .owner-language-switch {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 13px;
+    }
+
+    .owner-language-switch button {
+      flex: 1;
+      border: 1px solid #dbeafe;
+      border-radius: 9px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      padding: 9px 5px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .owner-language-switch button.active {
+      background: #1d4ed8;
+      color: #fff;
+      border-color: #1d4ed8;
+    }
+
+    .owner-bio-text {
+      font-size: 14px;
+      line-height: 1.85;
+      color: var(--text);
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    .owners-team-note {
+      margin-top: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .owners-team-note h3 {
+      margin: 0 0 7px;
+      color: var(--purple);
+      font-size: 14px;
+    }
+
+    .owners-team-note p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+  `;
+
+  document.head.appendChild(style);
+})();
+
+let ownersLanguage = "bn";
+
+function renderOwnersPage() {
+  const L = OWNER_LABELS[ownersLanguage];
+
+  $("v-owners").innerHTML = `
+    <div class="owners-heading">
+      <h2>JAVIISLAM Leadership</h2>
+      <p>
+        ${ownersLanguage === "bn"
+          ? "কোম্পানির মালিক ও পরিচালনা পর্ষদ"
+          : ownersLanguage === "ur"
+          ? "کمپنی کے مالک اور انتظامی قیادت"
+          : "Company Owner & Leadership Team"}
+      </p>
+    </div>
+
+    <div class="owners-grid">
+      ${OWNERS.map((o, index) => `
+        <article class="owner-premium-card">
+
+          <div class="owner-premium-photo">
+            <img src="${o.photo}" alt="${esc(o.name)}">
+          </div>
+
+          <h3 class="owner-premium-name">
+            ${esc(o.name)}
+          </h3>
+
+          <div class="owner-premium-role">
+            ${esc(o.role[ownersLanguage])}
+          </div>
+
+          <button
+            class="owner-detail-btn"
+            type="button"
+            data-owner-toggle="${index}">
+            ${L.details}
+          </button>
+
+          <section
+            class="owner-detail-panel"
+            id="owner-detail-${index}">
+
+            <h3>${L.expertise}</h3>
+
+            <div class="owner-language-label">
+              ${L.lang}
+            </div>
+
+            <div class="owner-language-switch">
+
+              <button type="button"
+                data-owner-lang="bn"
+                class="${ownersLanguage === "bn" ? "active" : ""}">
+                বাংলা
+              </button>
+
+              <button type="button"
+                data-owner-lang="en"
+                class="${ownersLanguage === "en" ? "active" : ""}">
+                English
+              </button>
+
+              <button type="button"
+                data-owner-lang="ur"
+                class="${ownersLanguage === "ur" ? "active" : ""}">
+                اردو
+              </button>
+
+            </div>
+
+            <div class="owner-bio-text">
+              ${esc(o.bio[ownersLanguage])}
+            </div>
+
+          </section>
+        </article>
+      `).join("")}
+    </div>
+
+    <div class="owners-team-note">
+      <h3>${L.team}</h3>
+      <p>${L.teamText}</p>
+    </div>
+  `;
+
+  /* Details buttons */
+  $("v-owners").querySelectorAll("[data-owner-toggle]")
+    .forEach(btn => {
+      btn.addEventListener("click", () => {
+
+        const panel = $("owner-detail-" + btn.dataset.ownerToggle);
+
+        const willOpen = !panel.classList.contains("open");
+
+        panel.classList.toggle("open", willOpen);
+
+        btn.textContent = willOpen
+          ? OWNER_LABELS[ownersLanguage].hide
+          : OWNER_LABELS[ownersLanguage].details;
+      });
+    });
+
+  /* Offline language switching */
+  $("v-owners").querySelectorAll("[data-owner-lang]")
+    .forEach(btn => {
+
+      btn.addEventListener("click", () => {
+
+        ownersLanguage = btn.dataset.ownerLang;
+
+        const openPanels = OWNERS.map((_, i) =>
+          $("owner-detail-" + i)?.classList.contains("open") || false
+        );
+
+        renderOwnersPage();
+
+        openPanels.forEach((isOpen, i) => {
+
+          if (!isOpen) return;
+
+          const panel = $("owner-detail-" + i);
+
+          if (panel) {
+            panel.classList.add("open");
+
+            const toggle = $("v-owners").querySelector(
+              `[data-owner-toggle="${i}"]`
+            );
+
+            if (toggle) {
+              toggle.textContent = OWNER_LABELS[ownersLanguage].hide;
+            }
+          }
+        });
+      });
+    });
+}
+
+function openOwners() {
+  ownersLanguage = "bn";
+  renderOwnersPage();
   show("owners");
 }
-$("nav-owners").onclick = openOwners;
 
+$("nav-owners").onclick = openOwners;
+  
 function doLogout(){ signOut(auth).then(() => { window.location.href = "index.html"; }); }
 $("logoutBtn").onclick = doLogout;
 $("gateLogout").onclick = doLogout;
