@@ -192,7 +192,10 @@ function profileHTML(d, isSelf){
   const rows = [
     ["First Name", d.firstName],
     ["Full Name", d.fullName || d.name],
+    ["Father's Name", d.fatherName],
+    ["Mother's Name", d.motherName],
     ["Birth Place", d.birthPlace],
+    ["Present Address", d.presentAddress],
     ["Phone", d.mobileNumber || d.phone],
     ["Email", d.email]
   ].map(r => `<div class="row"><span>${r[0]}</span><span>${esc(r[1] || "—")}</span></div>`).join("");
