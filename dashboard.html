@@ -203,6 +203,7 @@ function show(view){
   $("nav-home").classList.toggle("on", view === "home");
   $("nav-docs").classList.toggle("on", view === "docs" && !!docsFor && docsFor.uid === me.uid);
   $("nav-members").classList.toggle("on", view === "members" || view === "other");
+  $("nav-owners").classList.toggle("on", view === "owners");
   window.scrollTo(0, 0);
 }
 
