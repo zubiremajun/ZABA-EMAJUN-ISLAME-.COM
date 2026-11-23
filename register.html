@@ -1,265 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JAVIISLAM TECH & LOGISTICS - Registration</title>
-  <style>
-    body { font-family: Arial, sans-serif; background-color: #f7f3e8; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; box-sizing: border-box; }
-    .form-container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(127,29,29,0.18); border-top: 5px solid #b91c3c; width: 100%; max-width: 400px; box-sizing: border-box; text-align: center; }
-    .back-row { text-align: left; margin-bottom: 10px; }
-    .btn-back { display: inline-block; padding: 8px 14px; background: #ffffff; color: #6b21a8; border: 1.5px solid #6b21a8; border-radius: 6px; font-size: 14px; font-weight: bold; text-decoration: none; }
-    .btn-back:hover { background: #6b21a8; color: #ffffff; }
-    .logo-container { text-align: center; margin-bottom: 15px; }
-    .logo-container img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid #c9a24b; object-fit: cover; display: inline-block; }
-    .company-name { font-size: 18px; font-weight: bold; color: #7f1d1d; margin-top: 8px; text-transform: uppercase; letter-spacing: 1px; }
-    .form-container h2 { text-align: center; color: #333; margin-bottom: 20px; margin-top: 5px; }
-    .input-group { margin-bottom: 15px; text-align: left; }
-    .input-group label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
-    .input-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
-    .input-group input:focus { border-color: #6b21a8; outline: none; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JAVIISLAM TECH & LOGISTICS - Registration</title>
+<style>
+:root{--maroon:#7f1d1d;--red:#b91c3c;--purple:#6b21a8;--green:#15803d;--gold:#c9a24b;--cream:#f7f3e8;--line:#e5e0cf;--muted:#6b7280}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--cream);margin:0;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:15px}
+.card{background:#fff;width:100%;max-width:420px;border-radius:16px;border-top:5px solid var(--red);box-shadow:0 6px 24px rgba(127,29,29,.16);padding:22px 22px 26px;margin:10px 0}
+.head{text-align:center;margin-bottom:14px}
+.head img{width:84px;height:84px;border-radius:50%;border:3px solid var(--gold);object-fit:cover}
+.head .co{font-size:17px;font-weight:800;color:var(--maroon);letter-spacing:.8px;margin-top:8px;text-transform:uppercase}
 
-    .toggle-password { display: inline-block; margin-top: 6px; cursor: pointer; font-size: 13px; font-weight: bold; color: #b91c3c; user-select: none; }
+/* progress */
+.steps{display:flex;align-items:center;justify-content:space-between;margin:14px 4px 18px}
+.dot{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--muted);font-weight:600;flex:0 0 auto}
+.dot i{width:30px;height:30px;border-radius:50%;background:#eee;color:#9ca3af;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;font-size:14px;transition:.25s}
+.dot.on i{background:var(--maroon);color:#fff}
+.dot.done i{background:var(--green);color:#fff}
+.dot.on,.dot.done{color:var(--maroon)}
+.bar{flex:1;height:3px;background:#eee;margin:0 6px 16px;border-radius:3px;overflow:hidden}
+.bar b{display:block;height:100%;width:0;background:var(--green);transition:.3s}
+.bar.full b{width:100%}
 
-    .btn { width: 100%; padding: 12px; background: #15803d; border: none; color: white; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-    .btn:hover { background: #166534; }
-    .btn:disabled { background: #cccccc; cursor: not-allowed; }
+h2{margin:0 0 4px;font-size:19px;color:var(--maroon);text-align:center}
+.sub{margin:0 0 16px;font-size:13px;color:var(--muted);text-align:center}
 
-    #otpSection { display: none; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ddd; }
-    .timer-style { font-size: 14px; color: #ff9800; font-weight: bold; margin-top: 5px; display: block; text-align: left; }
-    .warning-style { font-size: 14px; color: #dc3545; font-weight: bold; margin-top: 5px; display: none; text-align: left; }
-  </style>
+.step{display:none;animation:in .2s ease}
+.step.on{display:block}
+@keyframes in{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+
+.f{margin-bottom:13px;text-align:left}
+.f label{display:block;font-size:13px;color:#4b5563;margin-bottom:5px;font-weight:600}
+.f input,.f textarea{width:100%;padding:12px;border:1.5px solid #d9d4c3;border-radius:9px;font-size:16px;font-family:inherit;background:#fff}
+.f input:focus,.f textarea:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(107,33,168,.12)}
+.f textarea{resize:none}
+.tg{display:inline-block;margin-top:6px;font-size:13px;font-weight:700;color:var(--red);cursor:pointer;user-select:none}
+
+.btn{width:100%;padding:13px;border:none;border-radius:10px;font-size:16px;font-weight:800;color:#fff;background:var(--green);cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{background:#c8c8c8;cursor:not-allowed}
+.btn.alt{background:var(--purple)}
+.back{background:#fff;border:1.5px solid var(--purple);color:var(--purple);padding:8px 14px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:6px}
+
+.err{display:none;background:#fef2f2;border-left:4px solid var(--red);color:#7f1d1d;padding:10px 12px;border-radius:6px;font-size:13.5px;margin-bottom:12px;text-align:left}
+.ok{display:none;background:#f0fdf4;border-left:4px solid var(--green);color:#14532d;padding:10px 12px;border-radius:6px;font-size:13.5px;margin-bottom:12px;text-align:left}
+
+.otp{letter-spacing:10px;text-align:center;font-size:26px!important;font-weight:800}
+.timer{text-align:center;font-weight:700;color:#d97706;font-size:14px;margin:8px 0 14px;min-height:20px}
+.timer.exp{color:#dc2626}
+
+.done{text-align:center;padding:6px 0}
+.done .big{font-size:56px}
+.done p{color:#4b5563;font-size:14.5px;line-height:1.7;margin:8px 0 18px}
+.notice{background:#fffbeb;border-left:4px solid var(--gold);color:#78350f;padding:11px 12px;border-radius:6px;font-size:13.5px;text-align:left;margin-bottom:16px}
+</style>
 </head>
 <body>
 
-  <div class="form-container">
-    <div class="back-row">
-      <a href="index.html" class="btn-back">&larr; Back</a>
-    </div>
+<div class="card">
+  <div class="head">
+    <img src="https://i.postimg.cc/28NBQ4WH/1781359235072-removebg-preview.png" alt="JAVIISLAM TECH & LOGISTICS Logo">
+    <div class="co">JAVIISLAM TECH &amp; LOGISTICS</div>
+  </div>
 
-    <div class="logo-container">
-      <img src="https://i.postimg.cc/28NBQ4WH/1781359235072-removebg-preview.png" alt="JAVIISLAM TECH & LOGISTICS Logo">
-      <div class="company-name">JAVIISLAM TECH & LOGISTICS</div>
-    </div>
-
-    <h2>Member Registration</h2>
-
-    <form id="registrationForm">
-      <div class="input-group">
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstName" placeholder="Enter first name" required>
-      </div>
-      <div class="input-group">
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" placeholder="Enter full name" required>
-      </div>
-      <div class="input-group">
-        <label for="birthPlace">Birth Place</label>
-        <input type="text" id="birthPlace" placeholder="Enter birth place" required>
-      </div>
-      <div class="input-group">
-        <label for="phoneNumber">Phone Number</label>
-        <input type="tel" id="phoneNumber" placeholder="Enter phone number" required>
-      </div>
-      <div class="input-group">
-        <label for="emailAddress">Email Address</label>
-        <input type="email" id="emailAddress" placeholder="Enter email" required>
-      </div>
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Create password" required>
-        <span class="toggle-password" data-target="password">Show Password</span>
-      </div>
-      <div class="input-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
-        <span class="toggle-password" data-target="confirmPassword">Show Password</span>
-      </div>
-      <button type="submit" id="sendOtpBtn" class="btn">Send OTP Code</button>
-    </form>
-
-    <div id="otpSection">
-      <div class="input-group">
-        <label for="otpInput">Enter 6-Digit OTP</label>
-        <input type="text" id="otpInput" placeholder="Enter OTP code" maxlength="6">
-        <span id="timerText" class="timer-style"></span>
-        <span id="warningText" class="warning-style">❌ Timeout! This OTP has expired. Please request a new one.</span>
-      </div>
-      <button id="verifyOTPButton" class="btn" style="background: #15803d; margin-bottom: 10px;">Verify & Register</button>
-      <button id="resendOTPButton" class="btn" style="background: #6b21a8; display: none;">Resend OTP</button>
+  <div id="stepsBar">
+    <button class="back" id="backBtn" type="button">&larr; Back</button>
+    <div class="steps">
+      <div class="dot on" id="d1"><i>1</i>Personal</div>
+      <div class="bar" id="b1"><b></b></div>
+      <div class="dot" id="d2"><i>2</i>Account</div>
+      <div class="bar" id="b2"><b></b></div>
+      <div class="dot" id="d3"><i>3</i>Verify</div>
     </div>
   </div>
 
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- STEP 1 -->
+  <form class="step on" id="s1" autocomplete="on" novalidate>
+    <h2>Personal Information</h2>
+    <p class="sub">Tell us about yourself</p>
+    <div class="err" id="e1"></div>
+    <div class="f"><label for="firstName">First Name</label><input id="firstName" type="text" autocomplete="given-name" placeholder="Your first name"></div>
+    <div class="f"><label for="fullName">Full Name</label><input id="fullName" type="text" autocomplete="name" placeholder="Your full name"></div>
+    <div class="f"><label for="fatherName">Father's Name</label><input id="fatherName" type="text" placeholder="Father's full name"></div>
+    <div class="f"><label for="motherName">Mother's Name</label><input id="motherName" type="text" placeholder="Mother's full name"></div>
+    <div class="f"><label for="birthPlace">Birth Place</label><input id="birthPlace" type="text" placeholder="Where were you born?"></div>
+    <div class="f"><label for="presentAddress">Present Address</label><textarea id="presentAddress" rows="2" placeholder="Where do you live now?"></textarea></div>
+    <div class="f"><label for="phoneNumber">Phone Number</label><input id="phoneNumber" type="tel" inputmode="tel" autocomplete="tel" placeholder="e.g. 01XXXXXXXXX"></div>
+    <button class="btn" type="submit">Continue &rarr;</button>
+  </form>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  <!-- STEP 2 -->
+  <form class="step" id="s2" autocomplete="on" novalidate>
+    <h2>Create Your Account</h2>
+    <p class="sub">We will send a code to your email</p>
+    <div class="err" id="e2"></div>
+    <div class="f"><label for="emailAddress">Email Address</label><input id="emailAddress" type="email" autocomplete="email" placeholder="you@gmail.com"></div>
+    <div class="f"><label for="password">Password</label><input id="password" type="password" autocomplete="new-password" placeholder="At least 6 characters"><span class="tg" data-t="password">Show Password</span></div>
+    <div class="f"><label for="confirmPassword">Confirm Password</label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Type the password again"><span class="tg" data-t="confirmPassword">Show Password</span></div>
+    <button class="btn" type="submit" id="sendBtn">Send OTP Code</button>
+  </form>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
-      authDomain: "zaba-emajun-islam.firebaseapp.com",
-      projectId: "zaba-emajun-islam",
-      storageBucket: "zaba-emajun-islam.firebasestorage.app",
-      messagingSenderId: "593592059226",
-      appId: "1:593592059226:web:bfd81719f87e065dc19f63"
-    };
+  <!-- STEP 3 -->
+  <form class="step" id="s3" autocomplete="off" novalidate>
+    <h2>Verify Your Email</h2>
+    <p class="sub" id="otpSub">Enter the 6-digit code sent to your email</p>
+    <div class="ok" id="o3"></div>
+    <div class="err" id="e3"></div>
+    <div class="f"><input id="otpInput" class="otp" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••"></div>
+    <div class="timer" id="timer"></div>
+    <button class="btn" type="submit" id="verifyBtn">Verify &amp; Register</button>
+    <button class="btn alt" type="button" id="resendBtn" style="display:none;margin-top:10px">Resend OTP</button>
+  </form>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+  <!-- STEP 4 -->
+  <div class="step" id="s4">
+    <div class="done">
+      <div class="big">✅</div>
+      <h2>Registration Complete!</h2>
+      <p>Your account has been created successfully.</p>
+      <div class="notice">⏳ <b>Approval Pending:</b> You cannot enter the dashboard until the admin approves your account. Please check back later.</div>
+      <button class="btn" id="goLogin" type="button">Go to Login</button>
+    </div>
+  </div>
+</div>
 
-    const ADMIN_EMAIL = "zubirosmani0@gmail.com";
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    emailjs.init("7zwRwsmVx9c-VqtC5");
+const firebaseConfig = {
+  apiKey: "AIzaSyANnOJ_5DiOY3h5q1sVdXqrAblSGynCqKQ",
+  authDomain: "zaba-emajun-islam.firebaseapp.com",
+  projectId: "zaba-emajun-islam",
+  storageBucket: "zaba-emajun-islam.firebasestorage.app",
+  messagingSenderId: "593592059226",
+  appId: "1:593592059226:web:bfd81719f87e065dc19f63"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_EMAIL = "zubirosmani0@gmail.com";
 
-    let generatedOTP = null;
-    let tempUserData = {};
-    let countdownInterval = null;
-    let isOtpExpired = false;
+emailjs.init("7zwRwsmVx9c-VqtC5");
 
-    // Show Password / Hide Password toggles (for both password fields)
-    document.querySelectorAll(".toggle-password").forEach(function(btn) {
-      btn.addEventListener("click", function() {
-        const input = document.getElementById(this.getAttribute("data-target"));
-        if (input.type === "password") {
-          input.type = "text";
-          this.innerText = "Hide Password";
-        } else {
-          input.type = "password";
-          this.innerText = "Show Password";
-        }
-      });
-    });
+const $ = (id) => document.getElementById(id);
+let step = 1, otp = null, expired = false, timerId = null, user = {}, busy = false;
 
-    function sendOTP() {
-      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-      isOtpExpired = false;
+function go(n){
+  step = n;
+  [1,2,3,4].forEach(i => $("s"+i).classList.toggle("on", i === n));
+  [1,2,3].forEach(i => {
+    const d = $("d"+i);
+    d.classList.toggle("on", i === n);
+    d.classList.toggle("done", i < n || n === 4);
+    d.querySelector("i").textContent = (i < n || n === 4) ? "✓" : i;
+  });
+  $("b1").classList.toggle("full", n > 1);
+  $("b2").classList.toggle("full", n > 2);
+  $("stepsBar").style.display = n === 4 ? "none" : "block";
+  window.scrollTo(0, 0);
+}
+function showErr(id, msg){ const e = $(id); e.textContent = msg; e.style.display = "block"; }
+function clearMsgs(){ document.querySelectorAll(".err,.ok").forEach(e => e.style.display = "none"); }
 
-      const emailParams = {
-        to_email: tempUserData.email,
-        to_name: tempUserData.name,
-        otp_code: generatedOTP
-      };
+$("backBtn").onclick = () => {
+  clearMsgs();
+  if (step === 1) { window.location.href = "index.html"; return; }
+  if (step === 3) { clearInterval(timerId); }
+  go(step - 1);
+};
 
-      emailjs.send("service_ts1p41o", "template_xpqulds", emailParams)
-        .then(function() {
-          alert("An OTP code has been successfully sent to your Gmail!");
-          document.getElementById("otpSection").style.display = "block";
-          startTimer(60);
-          document.getElementById("otpSection").scrollIntoView({ behavior: "smooth", block: "center" });
-          document.getElementById("otpInput").focus();
-        }, function(error) {
-          alert("EmailJS Error: Failed to send OTP.");
-          console.log("Error details:", error);
-        });
+document.querySelectorAll(".tg").forEach(t => t.onclick = () => {
+  const i = $(t.dataset.t), show = i.type === "password";
+  i.type = show ? "text" : "password";
+  t.textContent = show ? "Hide Password" : "Show Password";
+});
+
+/* STEP 1 -> 2 */
+$("s1").addEventListener("submit", (e) => {
+  e.preventDefault(); clearMsgs();
+  const v = (id) => $(id).value.trim();
+  const need = [["firstName","First Name"],["fullName","Full Name"],["fatherName","Father's Name"],["motherName","Mother's Name"],["birthPlace","Birth Place"],["presentAddress","Present Address"],["phoneNumber","Phone Number"]];
+  for (const [id, label] of need) if (!v(id)) { showErr("e1", label + " is required."); $(id).focus(); return; }
+  if (v("phoneNumber").replace(/\D/g, "").length < 10) { showErr("e1", "Please enter a valid phone number."); $("phoneNumber").focus(); return; }
+  user = {
+    firstName: v("firstName"), fullName: v("fullName"), fatherName: v("fatherName"), motherName: v("motherName"),
+    birthPlace: v("birthPlace"), presentAddress: v("presentAddress"), phone: v("phoneNumber")
+  };
+  go(2);
+});
+
+/* OTP */
+function startTimer(sec){
+  clearInterval(timerId);
+  const t = $("timer"), inp = $("otpInput");
+  expired = false; t.classList.remove("exp");
+  $("verifyBtn").disabled = false; $("resendBtn").style.display = "none"; inp.disabled = false; inp.value = "";
+  let left = sec; t.textContent = "⏳ Time Left: " + left + "s";
+  timerId = setInterval(() => {
+    left--; t.textContent = "⏳ Time Left: " + left + "s";
+    if (left <= 0) {
+      clearInterval(timerId); expired = true;
+      t.textContent = "❌ Code expired. Please request a new one.";
+      t.classList.add("exp");
+      $("verifyBtn").disabled = true; inp.disabled = true; $("resendBtn").style.display = "block";
     }
+  }, 1000);
+}
 
-    function startTimer(seconds) {
-      clearInterval(countdownInterval);
-      const timerText = document.getElementById("timerText");
-      const warningText = document.getElementById("warningText");
-      const verifyBtn = document.getElementById("verifyOTPButton");
-      const resendBtn = document.getElementById("resendOTPButton");
-      const otpInput = document.getElementById("otpInput");
+async function sendOTP(btn, label){
+  if (busy) return;
+  busy = true; btn.disabled = true; btn.textContent = "Sending...";
+  otp = String(Math.floor(100000 + Math.random() * 900000));
+  try {
+    await emailjs.send("service_ts1p41o", "template_xpqulds", { to_email: user.email, to_name: user.fullName, otp_code: otp });
+    clearMsgs();
+    $("otpSub").textContent = "Enter the 6-digit code sent to " + user.email;
+    go(3); startTimer(60);
+    const o = $("o3"); o.textContent = "✔ Code sent! Check your inbox (and spam folder)."; o.style.display = "block";
+    $("otpInput").focus();
+  } catch (err) {
+    console.error(err);
+    showErr(step === 3 ? "e3" : "e2", "Could not send the code. Please check your email and try again.");
+  }
+  busy = false; btn.disabled = false; btn.textContent = label;
+}
 
-      timerText.style.display = "block";
-      warningText.style.display = "none";
-      verifyBtn.disabled = false;
-      resendBtn.style.display = "none";
-      otpInput.disabled = false;
-      otpInput.value = "";
+/* STEP 2 -> 3 */
+$("s2").addEventListener("submit", (e) => {
+  e.preventDefault(); clearMsgs();
+  const email = $("emailAddress").value.trim().toLowerCase();
+  const p1 = $("password").value, p2 = $("confirmPassword").value;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showErr("e2", "Please enter a valid email address."); return; }
+  if (p1.length < 6) { showErr("e2", "Password must be at least 6 characters."); return; }
+  if (p1 !== p2) { showErr("e2", "Passwords do not match. Please type the same password in both fields."); return; }
+  user.email = email; user.password = p1;
+  sendOTP($("sendBtn"), "Send OTP Code");
+});
+$("resendBtn").onclick = () => sendOTP($("resendBtn"), "Resend OTP");
 
-      let timeLeft = seconds;
+/* STEP 3 -> 4 */
+$("s3").addEventListener("submit", async (e) => {
+  e.preventDefault(); clearMsgs();
+  if (busy) return;
+  if (expired) { showErr("e3", "This code has expired. Please resend."); return; }
+  if ($("otpInput").value.trim() !== otp) { showErr("e3", "Wrong code. Please enter the correct code from your email."); return; }
 
-      countdownInterval = setInterval(function() {
-        timeLeft--;
-        timerText.innerText = "⏳ Time Left: " + timeLeft + "s";
-
-        if (timeLeft <= 0) {
-          clearInterval(countdownInterval);
-          isOtpExpired = true;
-          timerText.style.display = "none";
-          warningText.style.display = "block";
-          verifyBtn.disabled = true;
-          resendBtn.style.display = "block";
-          otpInput.disabled = true;
-        }
-      }, 1000);
+  busy = true; $("verifyBtn").disabled = true; $("verifyBtn").textContent = "Creating account...";
+  clearInterval(timerId);
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, user.email, user.password);
+    await setDoc(doc(db, "members", cred.user.uid), {
+      firstName: user.firstName,
+      name: user.fullName,
+      fullName: user.fullName,
+      fatherName: user.fatherName,
+      motherName: user.motherName,
+      birthPlace: user.birthPlace,
+      presentAddress: user.presentAddress,
+      phone: user.phone,
+      mobileNumber: user.phone,
+      email: user.email,
+      status: "pending",
+      createdAt: new Date()
+    });
+    if (user.email === ADMIN_EMAIL) { window.location.href = "admin-dashboard.html"; return; }
+    go(4);
+  } catch (err) {
+    busy = false; $("verifyBtn").disabled = false; $("verifyBtn").textContent = "Verify & Register";
+    if (err.code === "auth/email-already-in-use") {
+      go(2); showErr("e2", "This email is already registered. Please use another email or go back to login.");
+    } else if (err.code === "auth/weak-password") {
+      go(2); showErr("e2", "Password is too weak. Please choose a stronger one.");
+    } else {
+      showErr("e3", "Registration failed: " + (err.message || "unknown error"));
     }
+    return;
+  }
+  busy = false;
+});
 
-    document.getElementById("registrationForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const pass = document.getElementById("password").value;
-      const confirmPass = document.getElementById("confirmPassword").value;
-
-      if (pass !== confirmPass) {
-        alert("Passwords do not match! Please enter the same password in both fields.");
-        return;
-      }
-
-      tempUserData = {
-        firstName: document.getElementById("firstName").value.trim(),
-        name: document.getElementById("fullName").value,
-        birthPlace: document.getElementById("birthPlace").value.trim(),
-        phone: document.getElementById("phoneNumber").value,
-        email: document.getElementById("emailAddress").value.trim().toLowerCase(),
-        password: pass
-      };
-
-      sendOTP();
-    });
-
-    document.getElementById("resendOTPButton").addEventListener("click", function() {
-      sendOTP();
-    });
-
-    document.getElementById("verifyOTPButton").addEventListener("click", function() {
-      const userEnteredOTP = document.getElementById("otpInput").value;
-
-      if (isOtpExpired) {
-        alert("This OTP code has expired! Please click Resend OTP.");
-        return;
-      }
-
-      if (userEnteredOTP === generatedOTP) {
-        clearInterval(countdownInterval);
-        alert("OTP Verification Successful!");
-
-        createUserWithEmailAndPassword(auth, tempUserData.email, tempUserData.password)
-          .then((userCredential) => {
-            const user = userCredential.user;
-
-            setDoc(doc(db, "members", user.uid), {
-              firstName: tempUserData.firstName,
-              name: tempUserData.name,
-              birthPlace: tempUserData.birthPlace,
-              phone: tempUserData.phone,
-              email: tempUserData.email,
-              createdAt: new Date()
-            })
-            .then(() => {
-              alert("Success! Member data securely saved to Firebase Database.");
-
-              if (tempUserData.email === ADMIN_EMAIL) {
-                window.location.href = "admin-dashboard.html";
-              } else {
-                window.location.href = "dashboard.html";
-              }
-            })
-            .catch((error) => {
-              alert("Database Error: " + error.message);
-            });
-          })
-          .catch((error) => {
-            alert("Firebase Auth Error: " + error.message);
-          });
-      } else {
-        alert("Invalid OTP! Please enter the correct code from your email.");
-      }
-    });
-  </script>
+$("goLogin").onclick = () => { signOut(auth).finally(() => { window.location.href = "index.html"; }); };
+</script>
 </body>
 </html>
