@@ -1122,5 +1122,19 @@ setTimeout(() => {
   }
 }, 12000);
 </script>
+  <button id="giftBtn" style="display:none;position:fixed;right:14px;bottom:110px;z-index:60;padding:12px 16px;border:none;border-radius:50px;background:#c9a24b;color:#3b2a00;font-weight:800;box-shadow:0 4px 14px rgba(0,0,0,.25)">🎁 Support us: watch an ad</button>
+<script>
+(function () {
+  if (typeof AndroidAPI === "undefined") return; // only inside the app
+  var btn = document.getElementById("giftBtn");
+  function arm() { setTimeout(function () { btn.style.display = "block"; }, 5 * 60 * 1000); }
+  btn.onclick = function () {
+    btn.style.display = "none";
+    try { AndroidAPI.showRewardedAd(); } catch (e) {}
+    arm();
+  };
+  arm();
+})();
+</script>
 </body>
 </html>
