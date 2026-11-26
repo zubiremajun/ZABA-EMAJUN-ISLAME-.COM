@@ -239,7 +239,7 @@ function profileHTML(d, isSelf){
       <div class="p-name">${esc(nameOf(d))}</div>
       <div class="p-sub">${esc(d.occupation || "Member")}</div>
       <div class="money">
-        <div class="m-box m-bal" data-dep="${isSelf ? me.uid : esc(d.id)}" data-name="${esc(nameOf(d))}" data-self="${isSelf ? 1 : 0}"><small>Deposit / Balance</small><b>${money(d.balance)}</b><em>👆 হিস্টোরি দেখুন</em></div>
+        <div class="m-box m-bal" data-dep="${isSelf ? me.uid : esc(d.id)}" data-name="${esc(nameOf(d))}" data-self="${isSelf ? 1 : 0}"><small>Deposit / Balance</small><b>${money(d.balance)}</b><em>👆 View history</em>
         <div class="m-box m-loan"><small>Loan</small><b>${money(d.loan)}</b></div>
       </div>
     </div>
