@@ -326,7 +326,7 @@ async function openDocs(uid, title, backTo){
 async function openDeposits(uid, name, isSelf){
   show("deposits");
   const box = $("v-deposits");
-  box.innerHTML = `<div class="empty">লোড হচ্ছে...</div>`;
+  box.innerHTML = `<div class="empty">Loading...</div>`;
   try{
     const snap = await getDocs(collection(db, "members", uid, "deposits"));
     const items = [];
@@ -335,17 +335,17 @@ async function openDeposits(uid, name, isSelf){
     items.sort((a, b) => T(b) - T(a));
     const total = items.reduce((s, x) => s + Number(x.amount || 0), 0);
     box.innerHTML = `
-      <button class="back" id="depBack">← ফিরে যান</button>
-      <div class="dep-total"><small>${esc(isSelf ? "আমার" : name)} মোট জমা</small><b>${money(total)}</b></div>
+      <button class="back" id="depBack">← Back</button>
+      <div class="dep-total"><small>${esc(isSelf ? "My" : name)} Total Deposits</small><b>${money(total)}</b></div>
       ${items.length ? items.map(x => `
         <div class="dep-item">
           <b>${money(x.amount)}</b>
           <small>📅 ${T(x) ? new Date(T(x) * 1000).toLocaleString("en-GB", {dateStyle:"medium", timeStyle:"short"}) : "—"}</small>
           ${x.note ? `<small>📝 ${esc(x.note)}</small>` : ""}
-        </div>`).join("") : `<div class="sec"><div class="empty">এখনো কোনো ডিপোজিট নেই।</div></div>`}`;
+        </div>`).join("") : `<div class="sec"><div class="empty">No deposits yet./div></div>`}`;
     $("depBack").onclick = () => show(isSelf ? "home" : "other");
   }catch(err){
-    box.innerHTML = `<div class="sec"><div class="empty">লোড করা যায়নি।<br>${esc(err.message)}</div></div>`;
+    box.innerHTML = `<div class="sec"><div class="empty">Could not load.<br>${esc(err.message)}</div></div>`;
   }
 }
 document.addEventListener("click", (e) => {
