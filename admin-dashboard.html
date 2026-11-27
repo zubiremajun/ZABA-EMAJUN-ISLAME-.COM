@@ -148,6 +148,15 @@
     <label class="mg-l">Bio</label>
     <textarea class="mg-i" id="mgBio" rows="3" placeholder="Short bio about this member"></textarea>
     <button class="btn-action btn-approve" style="width:100%;padding:11px;margin:4px 0 18px;font-size:14px" onclick="saveProfileInfo()">Save Profile Info</button>
+      
+  <h4 style="margin:0 0 8px;color:#15803d">Deposit History</h4>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+  <div><label class="mg-l">Amount (৳)</label><input class="mg-i" id="depAmount" type="number" min="1"></div>
+  <div><label class="mg-l">Date &amp; Time</label><input class="mg-i" id="depDate" type="datetime-local"></div>
+</div>
+<input class="mg-i" id="depNote" type="text" placeholder="Note (optional)">
+<button class="btn-action btn-approve" id="depBtn" style="width:100%;padding:11px;font-size:14px" onclick="addDeposit()">Add Deposit</button>
+<div id="depList" style="margin:12px 0 18px"></div>
 
     <h4 style="margin:0 0 8px;color:#6b21a8">Documents</h4>
     <input class="mg-i" id="mgFile" type="file" accept="image/*">
@@ -162,7 +171,7 @@
 <script type="module">
     import { auth, db } from "./firebase-config.js";
     import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { collection, onSnapshot, doc, updateDoc, addDoc, getDocs, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { collection, onSnapshot, doc, updateDoc, addDoc, getDocs, deleteDoc, serverTimestamp, Timestamp, increment, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const membersCache = {};
 
