@@ -235,7 +235,7 @@
 <script type="module">
     import { auth, db } from "./firebase-config.js";
     import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { collection, onSnapshot, doc, updateDoc, addDoc, getDocs, deleteDoc, serverTimestamp, Timestamp, increment, writeBatch, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { collection, onSnapshot, doc, updateDoc, addDoc, getDocs, deleteDoc, serverTimestamp, Timestamp, increment, writeBatch, query, orderBy, limit , where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const membersCache = {};
 
