@@ -157,6 +157,14 @@
 <input class="mg-i" id="depNote" type="text" placeholder="Note (optional)">
 <button class="btn-action btn-approve" id="depBtn" style="width:100%;padding:11px;font-size:14px" onclick="addDeposit()">Add Deposit</button>
 <div id="depList" style="margin:12px 0 18px"></div>
+      <h4 style="margin:0 0 8px;color:#b91c3c">Loan History</h4>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+  <div><label class="mg-l">Loan Amount (৳)</label><input class="mg-i" id="loanAmount" type="number" min="1"></div>
+  <div><label class="mg-l">Date &amp; Time</label><input class="mg-i" id="loanDate" type="datetime-local"></div>
+</div>
+<input class="mg-i" id="loanNote" type="text" placeholder="Note (optional)">
+<button class="btn-action btn-block" id="loanBtn" style="width:100%;padding:11px;font-size:14px" onclick="addLoan()">Add Loan</button>
+<div id="loanList" style="margin:12px 0 18px"></div>
 
     <h4 style="margin:0 0 8px;color:#6b21a8">Documents</h4>
     <input class="mg-i" id="mgFile" type="file" accept="image/*">
