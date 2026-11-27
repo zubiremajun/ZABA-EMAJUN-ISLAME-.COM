@@ -645,6 +645,61 @@
         } catch (e) { alert("Microphone not allowed"); }
     };
     
+       /* ================= CALLS ================= */
+    let currentCallDocId = null, incomingCall = null, callsUnsub = null;
+
+    function openRoom(room, mode) {
+        const cfg = "config.prejoinPageEnabled=false&config.startWithVideoMuted=" + (mode === "audio" ? "true" : "false") + "&config.disableDeepLinking=true";
+        document.getElementById("callFrame").src = "https://meet.jit.si/" + encodeURIComponent(room) + "#" + cfg;
+        document.getElementById("callModal").style.display = "flex";
+    }
+
+    window.startCall = async function() {
+        const mode = confirm("OK = Video call\nCancel = Audio call") ? "video" : "audio";
+        const room = "javiislam-" + Date.now().toString(36);
+        try {
+            const ref = await addDoc(collection(db, "calls"), {
+                callerId: auth.currentUser.uid, callerName: "Admin", room, mode, active: true, createdAt: serverTimestamp()
+            });
+            currentCallDocId = ref.id;
+            openRoom(room, mode);
+        } catch (e) { alert("Call failed: " + e.message); }
+    };
+
+    window.leaveCall = async function() {
+        document.getElementById("callFrame").src = "about:blank";
+        document.getElementById("callModal").style.display = "none";
+        if (currentCallDocId) {
+            try { await deleteDoc(doc(db, "calls", currentCallDocId)); } catch (e) {}
+            currentCallDocId = null;
+        }
+    };
+
+    window.joinIncoming = function() {
+        if (!incomingCall) return;
+        openRoom(incomingCall.room, incomingCall.mode);
+        document.getElementById("incomingBar").style.display = "none";
+    };
+    window.dismissIncoming = function() {
+        document.getElementById("incomingBar").style.display = "none";
+    };
+
+    function watchCalls() {
+        if (callsUnsub) return;
+        const q = query(collection(db, "calls"), orderBy("createdAt", "desc"), limit(1));
+        callsUnsub = onSnapshot(q, (snap) => {
+            const bar = document.getElementById("incomingBar");
+            if (snap.empty) { bar.style.display = "none"; return; }
+            const d = snap.docs[0];
+            const c = d.data();
+            if (!c.active || c.callerId === auth.currentUser.uid || !c.createdAt) { bar.style.display = "none"; return; }
+            if (Date.now() - c.createdAt.seconds * 1000 > 4 * 3600 * 1000) { bar.style.display = "none"; return; }
+            incomingCall = c;
+            document.getElementById("incomingText").innerText = "📞 " + (c.callerName || "Member") + " is calling (" + (c.mode === "audio" ? "Audio" : "Video") + ")";
+            bar.style.display = "flex";
+        });
+    }
+    onAuthStateChanged(auth, (u) => { if (u && u.email === MASTER_ADMIN_EMAIL) watchCalls(); });
     document.getElementById("searchBar").addEventListener("input", function(e) {
         const searchText = e.target.value.toLowerCase();
         const rows = document.querySelectorAll("#memberTableBody tr");
