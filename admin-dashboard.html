@@ -159,6 +159,20 @@
         </table>
     </div>
 </div>
+
+<div id="incomingBar">
+  <span id="incomingText"></span>
+  <span>
+    <button style="background:#fff;color:#15803d" onclick="joinIncoming()">Join</button>
+    <button style="background:#b91c3c;color:#fff" onclick="dismissIncoming()">✕</button>
+  </span>
+</div>
+
+<div id="callModal">
+  <div class="cm-top"><b>📞 Live Call</b><button class="btn-logout" onclick="leaveCall()">Leave</button></div>
+  <iframe id="callFrame" allow="camera; microphone; fullscreen; display-capture; autoplay"></iframe>
+</div>
+    
 <div id="chatModal">
   <div class="ch-wrap">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
