@@ -344,15 +344,42 @@ async function openDeposits(uid, name, isSelf){
           <b>${money(x.amount)}</b>
           <small>📅 ${T(x) ? new Date(T(x) * 1000).toLocaleString("en-GB", {dateStyle:"medium", timeStyle:"short"}) : "—"}</small>
           ${x.note ? `<small>📝 ${esc(x.note)}</small>` : ""}
-        </div>`).join("") : `<div class="sec"><div class="empty">No deposits yet./div></div>`}`;
+        </div>`).join("") : `<div class="sec"><div class="empty">No deposits yet.</div></div>`}`;
     $("depBack").onclick = () => show(isSelf ? "home" : "other");
   }catch(err){
     box.innerHTML = `<div class="sec"><div class="empty">Could not load.<br>${esc(err.message)}</div></div>`;
   }
 }
-document.addEventListener("click", (e) => {
+async function openLoans(uid, name, isSelf){
+  show("loans");
+  const box = $("v-loans");
+  box.innerHTML = `<div class="empty">Loading...</div>`;
+  try{
+    const snap = await getDocs(collection(db, "members", uid, "loans"));
+    const items = [];
+    snap.forEach(s => items.push({ id: s.id, ...s.data() }));
+    const T = x => (x.loanDate?.seconds || x.createdAt?.seconds || 0);
+    items.sort((a, b) => T(b) - T(a));
+    const total = items.reduce((s, x) => s + Number(x.amount || 0), 0);
+    box.innerHTML = `
+      <button class="back" id="loanBack">← Back</button>
+      <div class="dep-total" style="background:linear-gradient(135deg,#b91c3c,#7f1d1d)"><small>${esc(isSelf ? "My" : name)} Total Loan</small><b>${money(total)}</b></div>
+      ${items.length ? items.map(x => `
+        <div class="dep-item">
+          <b style="color:#b91c3c">${money(x.amount)}</b>
+          <small>📅 ${T(x) ? new Date(T(x) * 1000).toLocaleString("en-GB", {dateStyle:"medium", timeStyle:"short"}) : "—"}</small>
+          ${x.note ? `<small>📝 ${esc(x.note)}</small>` : ""}
+        </div>`).join("") : `<div class="sec"><div class="empty">No loans yet.</div></div>`}`;
+    $("loanBack").onclick = () => show(isSelf ? "home" : "other");
+  }catch(err){
+    box.innerHTML = `<div class="sec"><div class="empty">Could not load.<br>${esc(err.message)}</div></div>`;
+  }
+}
+  document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-dep]");
   if (b) openDeposits(b.dataset.dep, b.dataset.name, b.dataset.self === "1");
+   const l = e.target.closest("[data-loan]");
+  if (l) openLoans(l.dataset.loan, l.dataset.name, l.dataset.self === "1");
 });
   
 function openLight(src){ $("lightImg").src = src; $("lightbox").style.display = "flex"; }
