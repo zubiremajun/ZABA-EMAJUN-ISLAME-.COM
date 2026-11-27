@@ -303,6 +303,10 @@
         document.getElementById("mgNote").value = "";
         document.getElementById("mgFile").value = "";
         document.getElementById("manageModal").style.display = "flex";
+        document.getElementById("depAmount").value = "";
+        document.getElementById("depNote").value = "";
+        document.getElementById("depDate").value = "";
+        loadDeposits();
         loadDocs();
     };
 
@@ -322,7 +326,62 @@
             alert("Saved successfully!");
         } catch (e) { alert("Error: " + e.message); }
     };
+    async function loadDeposits() {
+        const list = document.getElementById("depList");
+        list.innerHTML = "Loading...";
+        try {
+            const snap = await getDocs(collection(db, "members", manageId, "deposits"));
+            const items = [];
+            snap.forEach(s => items.push({ id: s.id, ...s.data() }));
+            const T = x => (x.depositDate?.seconds || x.createdAt?.seconds || 0);
+            items.sort((a, b) => T(b) - T(a));
+            if (!items.length) { list.innerHTML = "<div style='color:#6b7280'>No deposits yet.</div>"; return; }
+            list.innerHTML = "";
+            items.forEach(x => {
+                const div = document.createElement("div");
+                div.className = "mg-doc";
+                div.innerHTML = `<div style="flex:1;font-size:13px">
+                    <b style="color:#15803d">৳ ${Number(x.amount || 0).toLocaleString("en-IN")}</b><br>
+                    📅 ${T(x) ? new Date(T(x) * 1000).toLocaleString("en-GB", {dateStyle:"medium", timeStyle:"short"}) : "—"}
+                    ${x.note ? "<br>📝 " + esc(x.note) : ""}</div>
+                    <button class="btn-action btn-block">Delete</button>`;
+                div.querySelector("button").onclick = async () => {
+                    if (!confirm("Delete this deposit? Balance will be reduced too.")) return;
+                    const b = writeBatch(db);
+                    b.delete(doc(db, "members", manageId, "deposits", x.id));
+                    b.update(doc(db, "members", manageId), { balance: increment(-Number(x.amount || 0)) });
+                    await b.commit();
+                    const bal = document.getElementById("mgBalance");
+                    bal.value = (Number(bal.value) || 0) - Number(x.amount || 0);
+                    loadDeposits();
+                };
+                list.appendChild(div);
+            });
+        } catch (e) { list.innerHTML = "Error: " + esc(e.message); }
+    }
 
+    window.addDeposit = async function() {
+        const amount = Number(document.getElementById("depAmount").value);
+        const dt = document.getElementById("depDate").value;
+        const note = document.getElementById("depNote").value.trim();
+        if (!amount || amount <= 0) { alert("Enter a valid amount."); return; }
+        if (!dt) { alert("Choose date & time."); return; }
+        const btn = document.getElementById("depBtn");
+        btn.disabled = true;
+        try {
+            const b = writeBatch(db);
+            const ref = doc(collection(db, "members", manageId, "deposits"));
+            b.set(ref, { amount, note, depositDate: Timestamp.fromDate(new Date(dt)), createdAt: serverTimestamp() });
+            b.update(doc(db, "members", manageId), { balance: increment(amount) });
+            await b.commit();
+            const bal = document.getElementById("mgBalance");
+            bal.value = (Number(bal.value) || 0) + amount;
+            document.getElementById("depAmount").value = "";
+            document.getElementById("depNote").value = "";
+            loadDeposits();
+        } catch (e) { alert("Error: " + e.message); }
+        btn.disabled = false;
+    };
     async function loadDocs() {
         const list = document.getElementById("mgDocList");
         list.innerHTML = "Loading...";
