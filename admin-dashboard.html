@@ -394,6 +394,62 @@
         } catch (e) { alert("Error: " + e.message); }
         btn.disabled = false;
     };
+        async function loadLoans() {
+        const list = document.getElementById("loanList");
+        list.innerHTML = "Loading...";
+        try {
+            const snap = await getDocs(collection(db, "members", manageId, "loans"));
+            const items = [];
+            snap.forEach(s => items.push({ id: s.id, ...s.data() }));
+            const T = x => (x.loanDate?.seconds || x.createdAt?.seconds || 0);
+            items.sort((a, b) => T(b) - T(a));
+            if (!items.length) { list.innerHTML = "<div style='color:#6b7280'>No loans yet.</div>"; return; }
+            list.innerHTML = "";
+            items.forEach(x => {
+                const div = document.createElement("div");
+                div.className = "mg-doc";
+                div.innerHTML = `<div style="flex:1;font-size:13px">
+                    <b style="color:#b91c3c">৳ ${Number(x.amount || 0).toLocaleString("en-IN")}</b><br>
+                    📅 ${T(x) ? new Date(T(x) * 1000).toLocaleString("en-GB", {dateStyle:"medium", timeStyle:"short"}) : "—"}
+                    ${x.note ? "<br>📝 " + esc(x.note) : ""}</div>
+                    <button class="btn-action btn-block">Delete</button>`;
+                div.querySelector("button").onclick = async () => {
+                    if (!confirm("Delete this loan? Loan total will be reduced too.")) return;
+                    const b = writeBatch(db);
+                    b.delete(doc(db, "members", manageId, "loans", x.id));
+                    b.update(doc(db, "members", manageId), { loan: increment(-Number(x.amount || 0)) });
+                    await b.commit();
+                    const ln = document.getElementById("mgLoan");
+                    ln.value = (Number(ln.value) || 0) - Number(x.amount || 0);
+                    loadLoans();
+                };
+                list.appendChild(div);
+            });
+        } catch (e) { list.innerHTML = "Error: " + esc(e.message); }
+    }
+
+    window.addLoan = async function() {
+        const amount = Number(document.getElementById("loanAmount").value);
+        const dt = document.getElementById("loanDate").value;
+        const note = document.getElementById("loanNote").value.trim();
+        if (!amount || amount <= 0) { alert("Enter a valid amount."); return; }
+        if (!dt) { alert("Choose date & time."); return; }
+        const btn = document.getElementById("loanBtn");
+        btn.disabled = true;
+        try {
+            const b = writeBatch(db);
+            const ref = doc(collection(db, "members", manageId, "loans"));
+            b.set(ref, { amount, note, loanDate: Timestamp.fromDate(new Date(dt)), createdAt: serverTimestamp() });
+            b.update(doc(db, "members", manageId), { loan: increment(amount) });
+            await b.commit();
+            const ln = document.getElementById("mgLoan");
+            ln.value = (Number(ln.value) || 0) + amount;
+            document.getElementById("loanAmount").value = "";
+            document.getElementById("loanNote").value = "";
+            loadLoans();
+        } catch (e) { alert("Error: " + e.message); }
+        btn.disabled = false;
+    };
     async function loadDocs() {
         const list = document.getElementById("mgDocList");
         list.innerHTML = "Loading...";
