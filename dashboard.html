@@ -1182,6 +1182,156 @@ function openOwners() {
 }
 
 $("nav-owners").onclick = openOwners;
+  /* ================= GROUP CHAT ================= */
+let chatUnsub = null;
+let chatRecorder = null, chatChunks = [], chatTimer = null, chatStart = 0;
+
+function chatSkeleton(){
+  $("v-chat").innerHTML = `
+    <div class="chat-top"><h2>💬 Group Chat</h2><button class="chat-call" id="chatCall">📞 Call</button></div>
+    <div class="chat-box" id="chatBox"><div class="empty">Loading...</div></div>
+    <div class="chat-bar">
+      <button id="chatImgBtn" title="Photo">📎</button>
+      <input type="text" id="chatText" placeholder="Write a message..." maxlength="1500">
+      <button id="chatMic" title="Voice">🎤</button>
+      <button class="send" id="chatSend">➤</button>
+    </div>
+    <input type="file" id="chatFile" accept="image/*" style="display:none">`;
+  $("chatSend").onclick = sendChatText;
+  $("chatText").addEventListener("keydown", e => { if (e.key === "Enter") sendChatText(); });
+  $("chatImgBtn").onclick = () => $("chatFile").click();
+  $("chatFile").onchange = sendChatImage;
+  $("chatMic").onclick = toggleVoice;
+  $("chatCall").onclick = () => toast("Call feature coming soon");
+}
+
+function openChat(){
+  show("chat");
+  chatSkeleton();
+  if (chatUnsub) chatUnsub();
+  const q = query(collection(db, "groupChat"), orderBy("createdAt", "desc"), limit(100));
+  chatUnsub = onSnapshot(q, (snap) => {
+    const box = $("chatBox");
+    if (!box) return;
+    const items = [];
+    snap.forEach(s => items.push({ id: s.id, ...s.data() }));
+    items.reverse();
+    if (!items.length){ box.innerHTML = `<div class="empty">No messages yet. Say Salam 👋</div>`; return; }
+    const isAdmin = (me.email || "").toLowerCase() === ADMIN_EMAIL;
+    box.innerHTML = items.map(m => {
+      const mine = m.senderId === me.uid;
+      let body = "";
+      if (m.type === "image") body = `<img src="${esc(m.media)}" alt="" data-full="1">`;
+      else if (m.type === "voice") body = `<audio controls src="${esc(m.media)}"></audio>`;
+      else body = esc(m.text);
+      const t = m.createdAt?.seconds ? new Date(m.createdAt.seconds * 1000).toLocaleTimeString("en-GB", {hour:"2-digit", minute:"2-digit"}) : "";
+      const canDel = mine || isAdmin;
+      return `<div class="msg ${mine ? "me" : "other"}">
+        ${mine ? "" : `<div class="who">${esc(m.senderName || "Member")}</div>`}
+        <div class="bub">${body}</div>
+        <div class="meta"><span>${t}</span>${canDel ? `<b data-del="${esc(m.id)}">Delete</b>` : ""}</div>
+      </div>`;
+    }).join("");
+    box.scrollTop = box.scrollHeight;
+    box.querySelectorAll("img[data-full]").forEach(im => im.onclick = () => openLight(im.src));
+    box.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => {
+      if (!confirm("Delete this message for everyone?")) return;
+      try { await deleteDoc(doc(db, "groupChat", b.dataset.del)); }
+      catch (err) { toast("Delete failed"); console.error(err); }
+    });
+  }, (err) => {
+    const box = $("chatBox");
+    if (box) box.innerHTML = `<div class="empty">Could not load chat.<br>${esc(err.message)}</div>`;
+  });
+}
+
+async function postChat(data){
+  await addDoc(collection(db, "groupChat"), {
+    senderId: me.uid,
+    senderName: nameOf(myData),
+    createdAt: serverTimestamp(),
+    ...data
+  });
+}
+
+async function sendChatText(){
+  const inp = $("chatText");
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = "";
+  try { await postChat({ type: "text", text }); }
+  catch (err) { toast("Send failed"); console.error(err); inp.value = text; }
+}
+
+function resizeFit(file, maxSide, quality){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const r = Math.min(1, maxSide / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = () => reject(new Error("Invalid image"));
+    img.src = url;
+  });
+}
+
+async function sendChatImage(e){
+  const file = e.target.files[0];
+  e.target.value = "";
+  if (!file) return;
+  try {
+    toast("Sending photo...");
+    let data = await resizeFit(file, 800, 0.6);
+    if (data.length > 650000) data = await resizeFit(file, 600, 0.5);
+    if (data.length > 650000){ toast("Photo too large"); return; }
+    await postChat({ type: "image", media: data });
+  } catch (err) { toast("Photo failed"); console.error(err); }
+}
+
+async function toggleVoice(){
+  const btn = $("chatMic");
+  if (chatRecorder && chatRecorder.state === "recording"){ chatRecorder.stop(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    chatChunks = [];
+    const opts = {};
+    if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) opts.mimeType = "audio/webm;codecs=opus";
+    opts.audioBitsPerSecond = 16000;
+    chatRecorder = new MediaRecorder(stream, opts);
+    chatRecorder.ondataavailable = ev => { if (ev.data.size) chatChunks.push(ev.data); };
+    chatRecorder.onstop = async () => {
+      clearTimeout(chatTimer);
+      stream.getTracks().forEach(t => t.stop());
+      btn.classList.remove("rec"); btn.textContent = "🎤";
+      const blob = new Blob(chatChunks, { type: chatRecorder.mimeType || "audio/webm" });
+      if (!blob.size) return;
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const data = reader.result;
+        if (data.length > 650000){ toast("Voice too long (max ~30 sec)"); return; }
+        try {
+          toast("Sending voice...");
+          await postChat({ type: "voice", media: data, duration: Math.round((Date.now() - chatStart) / 1000) });
+        } catch (err) { toast("Voice failed"); console.error(err); }
+      };
+      reader.readAsDataURL(blob);
+    };
+    chatStart = Date.now();
+    chatRecorder.start();
+    btn.classList.add("rec"); btn.textContent = "⏹";
+    chatTimer = setTimeout(() => { if (chatRecorder.state === "recording") chatRecorder.stop(); }, 30000);
+  } catch (err) {
+    toast("Microphone not allowed");
+    console.error(err);
+  }
+}
+
+$("nav-chat").onclick = openChat;
   
 function doLogout(){ signOut(auth).then(() => { window.location.href = "index.html"; }); }
 $("logoutBtn").onclick = doLogout;
