@@ -523,6 +523,106 @@
         btn.disabled = false; btn.innerText = "Upload Document";
     };
 
+     /* ================= ADMIN GROUP CHAT ================= */
+    let chUnsub = null, chRec = null, chChunks = [], chTimer = null, chStart = 0;
+
+    window.openChat = function() {
+        document.getElementById("chatModal").style.display = "flex";
+        if (chUnsub) chUnsub();
+        const q = query(collection(db, "groupChat"), orderBy("createdAt", "desc"), limit(100));
+        chUnsub = onSnapshot(q, (snap) => {
+            const box = document.getElementById("chBox");
+            const items = [];
+            snap.forEach(s => items.push({ id: s.id, ...s.data() }));
+            items.reverse();
+            if (!items.length) { box.innerHTML = "<div style='color:#6b7280'>No messages yet.</div>"; return; }
+            box.innerHTML = items.map(m => {
+                const mine = m.senderId === auth.currentUser.uid;
+                let body = "";
+                if (m.type === "image") body = `<img src="${esc(m.media)}" alt="">`;
+                else if (m.type === "voice") body = `<audio controls src="${esc(m.media)}"></audio>`;
+                else body = esc(m.text);
+                const t = m.createdAt?.seconds ? new Date(m.createdAt.seconds * 1000).toLocaleString("en-GB", {dateStyle:"short", timeStyle:"short"}) : "";
+                return `<div class="ch-msg ${mine ? "me" : ""}">
+                    <div class="ch-who">${esc(m.senderName || "Member")} • ${t}<span class="ch-del" data-del="${esc(m.id)}">Delete</span></div>
+                    <div class="ch-bub">${body}</div></div>`;
+            }).join("");
+            box.scrollTop = box.scrollHeight;
+            box.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => {
+                if (!confirm("Delete this message for everyone?")) return;
+                try { await deleteDoc(doc(db, "groupChat", b.dataset.del)); }
+                catch (e) { alert("Delete failed: " + e.message); }
+            });
+        }, (err) => { document.getElementById("chBox").innerHTML = "Error: " + esc(err.message); });
+    };
+
+    window.closeChat = function() {
+        document.getElementById("chatModal").style.display = "none";
+        if (chUnsub) { chUnsub(); chUnsub = null; }
+    };
+
+    async function chPost(data) {
+        await addDoc(collection(db, "groupChat"), {
+            senderId: auth.currentUser.uid,
+            senderName: "Admin",
+            createdAt: serverTimestamp(),
+            ...data
+        });
+    }
+
+    window.chSendText = async function() {
+        const inp = document.getElementById("chText");
+        const text = inp.value.trim();
+        if (!text) return;
+        inp.value = "";
+        try { await chPost({ type: "text", text }); }
+        catch (e) { alert("Send failed: " + e.message); inp.value = text; }
+    };
+    document.getElementById("chText").addEventListener("keydown", e => { if (e.key === "Enter") window.chSendText(); });
+
+    document.getElementById("chFile").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        e.target.value = "";
+        if (!file) return;
+        try {
+            let data = await resizeImage(file, 800, 0.6);
+            if (data.length > 650000) data = await resizeImage(file, 600, 0.5);
+            if (data.length > 650000) { alert("Photo too large"); return; }
+            await chPost({ type: "image", media: data });
+        } catch (err) { alert("Photo failed: " + err.message); }
+    });
+
+    window.chToggleVoice = async function() {
+        const btn = document.getElementById("chMic");
+        if (chRec && chRec.state === "recording") { chRec.stop(); return; }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            chChunks = [];
+            const opts = { audioBitsPerSecond: 16000 };
+            if (window.MediaRecorder && MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) opts.mimeType = "audio/webm;codecs=opus";
+            chRec = new MediaRecorder(stream, opts);
+            chRec.ondataavailable = ev => { if (ev.data.size) chChunks.push(ev.data); };
+            chRec.onstop = () => {
+                clearTimeout(chTimer);
+                stream.getTracks().forEach(t => t.stop());
+                btn.classList.remove("rec"); btn.textContent = "🎤";
+                const blob = new Blob(chChunks, { type: chRec.mimeType || "audio/webm" });
+                if (!blob.size) return;
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    if (reader.result.length > 650000) { alert("Voice too long (max ~30 sec)"); return; }
+                    try { await chPost({ type: "voice", media: reader.result, duration: Math.round((Date.now() - chStart) / 1000) }); }
+                    catch (e) { alert("Voice failed: " + e.message); }
+                };
+                reader.readAsDataURL(blob);
+            };
+            chStart = Date.now();
+            chRec.start();
+            btn.classList.add("rec"); btn.textContent = "⏹";
+            chTimer = setTimeout(() => { if (chRec.state === "recording") chRec.stop(); }, 30000);
+        } catch (e) { alert("Microphone not allowed"); }
+    };
+    
     document.getElementById("searchBar").addEventListener("input", function(e) {
         const searchText = e.target.value.toLowerCase();
         const rows = document.querySelectorAll("#memberTableBody tr");
