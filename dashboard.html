@@ -156,6 +156,7 @@ button{font-family:inherit}
   <section class="view" id="v-other"></section>
   <section class="view" id="v-owners"></section>
   <section class="view" id="v-deposits"></section>
+  <section class="view" id="v-loans"></section>
 </main>
 
 <nav class="nav">
@@ -209,7 +210,7 @@ let membersCache = null;
 let docsFor = null;
 
 function show(view){
-  ["home","docs","members","other","owners","deposits"].forEach(v => $("v-" + v).classList.toggle("on", v === view));
+  ["home","docs","members","other","owners","deposits","loans"].forEach(v => $("v-" + v).classList.toggle("on", v === view));
   $("nav-home").classList.toggle("on", view === "home");
   $("nav-docs").classList.toggle("on", view === "docs" && !!docsFor && docsFor.uid === me.uid);
   $("nav-members").classList.toggle("on", view === "members" || view === "other");
@@ -241,7 +242,7 @@ function profileHTML(d, isSelf){
       <div class="p-sub">${esc(d.occupation || "Member")}</div>
       <div class="money">
         <div class="m-box m-bal" data-dep="${isSelf ? me.uid : esc(d.id)}" data-name="${esc(nameOf(d))}" data-self="${isSelf ? 1 : 0}"><small>Deposit / Balance</small><b>${money(d.balance)}</b><em>👆 View history</em></div>
-        <div class="m-box m-loan"><small>Loan</small><b>${money(d.loan)}</b></div>
+        <div class="m-box m-loan" data-loan="${isSelf ? me.uid : esc(d.id)}" data-name="${esc(nameOf(d))}" data-self="${isSelf ? 1 : 0}"><small>Loan</small><b>${money(d.loan)}</b><em>👆 View history</em></div>
       </div>
     </div>
   </div>
