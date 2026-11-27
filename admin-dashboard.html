@@ -151,8 +151,23 @@
         </table>
     </div>
 </div>
-
-<div id="manageModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-start;justify-content:center;overflow-y:auto;padding:15px;">
+<div id="chatModal">
+  <div class="ch-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <h3 style="margin:0;color:#15803d">💬 Group Chat (Admin)</h3>
+      <button class="btn-logout" style="background:#4b5563;padding:6px 14px" onclick="closeChat()">Close</button>
+    </div>
+    <div class="ch-box" id="chBox">Loading...</div>
+    <div class="ch-bar">
+      <button id="chImgBtn" onclick="document.getElementById('chFile').click()">📎</button>
+      <input type="text" id="chText" placeholder="Write a message..." maxlength="1500">
+      <button id="chMic" onclick="chToggleVoice()">🎤</button>
+      <button class="send" onclick="chSendText()">➤</button>
+    </div>
+    <input type="file" id="chFile" accept="image/*" style="display:none">
+  </div>
+</div>
+ <div id="manageModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-start;justify-content:center;overflow-y:auto;padding:15px;">
   <div style="background:#fff;border-radius:14px;max-width:520px;width:100%;padding:20px;border-top:5px solid #7f1d1d;">
     <h3 id="mgTitle" style="margin:0 0 15px;color:#7f1d1d;font-size:16px;word-break:break-word"></h3>
 
@@ -198,7 +213,7 @@
 <script type="module">
     import { auth, db } from "./firebase-config.js";
     import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { collection, onSnapshot, doc, updateDoc, addDoc, getDocs, deleteDoc, serverTimestamp, Timestamp, increment, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { collection, onSnapshot, doc, updateDoc, addDoc, getDocs, deleteDoc, serverTimestamp, Timestamp, increment, writeBatch, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const membersCache = {};
 
