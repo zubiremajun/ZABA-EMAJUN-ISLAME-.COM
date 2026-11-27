@@ -67,6 +67,24 @@
         .badge-active { background-color: #d1fae5; color: #065f46; }
         .badge-pending { background-color: #fef3c7; color: #92400e; }
         .badge-blocked { background-color: #fee2e2; color: #991b1b; }
+                /* Group Chat */
+        .btn-chat { background:#15803d; color:#fff; border:none; padding:10px 18px; border-radius:6px; font-weight:600; cursor:pointer; }
+        #chatModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:110; align-items:flex-start; justify-content:center; padding:15px; }
+        .ch-wrap { background:#fff; border-radius:14px; max-width:560px; width:100%; padding:16px; border-top:5px solid #15803d; }
+        .ch-box { height:55vh; overflow-y:auto; background:#faf6ea; border:1px solid #e5e0cf; border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:8px; }
+        .ch-msg { max-width:85%; align-self:flex-start; }
+        .ch-msg.me { align-self:flex-end; text-align:right; }
+        .ch-who { font-size:11px; color:#6b7280; }
+        .ch-bub { display:inline-block; padding:8px 12px; border-radius:12px; background:#fff; border:1px solid #e5e7eb; font-size:14px; word-break:break-word; white-space:pre-wrap; text-align:left; }
+        .ch-msg.me .ch-bub { background:#ede9fe; }
+        .ch-bub img { max-width:100%; border-radius:8px; display:block; }
+        .ch-bub audio { max-width:220px; height:36px; }
+        .ch-del { color:#b91c3c; font-size:12px; font-weight:700; cursor:pointer; margin-left:8px; }
+        .ch-bar { display:flex; gap:6px; margin-top:10px; }
+        .ch-bar input[type=text] { flex:1; min-width:0; padding:10px 12px; border:1px solid #d1d5db; border-radius:50px; font-size:14px; }
+        .ch-bar button { width:42px; height:42px; border:none; border-radius:50%; background:#6b21a8; color:#fff; font-size:18px; cursor:pointer; flex-shrink:0; }
+        .ch-bar button.send { background:#15803d; }
+        .ch-bar button.rec { background:#b91c3c; }
     </style>
 </head>
 <body>
@@ -81,6 +99,7 @@
             </div>
         </div>
         <button class="btn-logout" id="logoutBtn">Secure Logout</button>
+      <button class="btn-chat" onclick="openChat()">💬 Group Chat</button>
     </header>
 
     <div class="stats-grid">
