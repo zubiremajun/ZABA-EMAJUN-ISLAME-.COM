@@ -1348,6 +1348,57 @@ async function toggleVoice(){
 }
 
 $("nav-chat").onclick = openChat;
+  /* ================= CALLS ================= */
+let currentCallDocId = null, incomingCall = null, callsUnsub = null;
+
+function openRoom(room, mode){
+  const cfg = "config.prejoinPageEnabled=false&config.startWithVideoMuted=" + (mode === "audio" ? "true" : "false") + "&config.disableDeepLinking=true";
+  $("callFrame").src = "https://meet.jit.si/" + encodeURIComponent(room) + "#" + cfg;
+  $("callModal").style.display = "flex";
+}
+
+async function startCall(){
+  const mode = confirm("OK = Video call\nCancel = Audio call") ? "video" : "audio";
+  const room = "javiislam-" + Date.now().toString(36);
+  try {
+    const ref = await addDoc(collection(db, "calls"), {
+      callerId: me.uid, callerName: nameOf(myData), room, mode, active: true, createdAt: serverTimestamp()
+    });
+    currentCallDocId = ref.id;
+    openRoom(room, mode);
+  } catch (err) { toast("Call failed"); console.error(err); }
+}
+
+async function leaveCall(){
+  $("callFrame").src = "about:blank";
+  $("callModal").style.display = "none";
+  if (currentCallDocId){
+    try { await deleteDoc(doc(db, "calls", currentCallDocId)); } catch (e) {}
+    currentCallDocId = null;
+  }
+}
+$("callLeave").onclick = leaveCall;
+$("incJoin").onclick = () => {
+  if (!incomingCall) return;
+  openRoom(incomingCall.room, incomingCall.mode);
+  $("incomingBar").style.display = "none";
+};
+$("incClose").onclick = () => { $("incomingBar").style.display = "none"; };
+
+function watchCalls(){
+  if (callsUnsub) return;
+  const q = query(collection(db, "calls"), orderBy("createdAt", "desc"), limit(1));
+  callsUnsub = onSnapshot(q, (snap) => {
+    const bar = $("incomingBar");
+    if (snap.empty){ bar.style.display = "none"; return; }
+    const c = snap.docs[0].data();
+    if (!c.active || c.callerId === me.uid || !c.createdAt){ bar.style.display = "none"; return; }
+    if (Date.now() - c.createdAt.seconds * 1000 > 4 * 3600 * 1000){ bar.style.display = "none"; return; }
+    incomingCall = c;
+    $("incomingText").textContent = "📞 " + (c.callerName || "Member") + " is calling (" + (c.mode === "audio" ? "Audio" : "Video") + ")";
+    bar.style.display = "flex";
+  }, (err) => console.error(err));
+}
   
 function doLogout(){ signOut(auth).then(() => { window.location.href = "index.html"; }); }
 $("logoutBtn").onclick = doLogout;
@@ -1387,6 +1438,7 @@ onAuthStateChanged(auth, (user) => {
     $("gate").style.display = "none";
     $("splash").style.display = "none";
     renderHome();
+    watchCalls();
   }, (err) => {
     gate("⚠️", "Connection Problem", "Could not load your profile: " + err.message);
   });
