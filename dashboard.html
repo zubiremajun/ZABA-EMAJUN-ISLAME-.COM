@@ -1218,7 +1218,7 @@ function chatSkeleton(){
   $("chatImgBtn").onclick = () => $("chatFile").click();
   $("chatFile").onchange = sendChatImage;
   $("chatMic").onclick = toggleVoice;
-  $("chatCall").onclick = () => toast("Call feature coming soon");
+  $("chatCall").onclick = startCall;
 }
 
 function openChat(){
